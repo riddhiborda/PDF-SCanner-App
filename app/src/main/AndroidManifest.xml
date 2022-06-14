@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.pdfscanner.pdf.scanpdf">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+
+
+    <application
+        android:name="com.pdfscanner.pdf.scanpdf.AppClass"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_app_icon"
+        android:label="@string/app_name_2"
+        android:requestLegacyExternalStorage="true"
+        android:roundIcon="@mipmap/ic_round_app_icon"
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
+        android:theme="@style/Theme.PDFScanner"
+        tools:replace="android:allowBackup,android:label">
+
+        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.ImageToPdfActivity"/>
+        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.Privacy_Activity"/>
+        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.SubscriptionActivity" />
+        <activity
+            android:name="com.pdfscanner.pdf.scanpdf.ui.DocumentActivity"
+            android:theme="@style/gray_theme" />
+        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.OcrActivity" />
+        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.ImageActivity" />
+        <activity
+            android:name="com.pdfscanner.pdf.scanpdf.ui.QrScanActivity"
+            android:theme="@style/Theme.black" />
+        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.EditorTwoActivity" />
+        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.EditDocumentActivity" />
+        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.ImageShowActivity" />
+        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.PreviewActivity" />
+        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.SignatureActivity" />
+        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.EditorActivity" />
+        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.EditScanActivity" />
+        <activity
+            android:name="com.pdfscanner.pdf.scanpdf.ui.SettingActivity"
+            android:theme="@style/gray_theme" />
+        <activity
+            android:name="com.pdfscanner.pdf.scanpdf.ui.SplashActivity"
+            android:theme="@style/Fullscreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.PermissionActivity" />
+        <activity
+            android:name="com.pdfscanner.pdf.scanpdf.MainActivity"
+            android:theme="@style/gray_theme" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+        <service
+            android:name="com.pdfscanner.pdf.scanpdf.service.ImageDataService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/app_unit_id" />
+
+    </application>
+
+</manifest>

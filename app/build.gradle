@@ -1,0 +1,110 @@
+buildscript {
+    repositories {
+        maven { url 'https://plugins.gradle.org/m2/' }
+    }
+    dependencies {
+        classpath 'gradle.plugin.com.onesignal:onesignal-gradle-plugin:0.12.10'
+    }
+}
+apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
+apply plugin: 'com.android.application'
+//plugins {
+//    id 'com.android.application'
+//}
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        applicationId "com.pdfscanner.pdf.scanpdf"
+        minSdkVersion 19
+        targetSdkVersion 29
+        versionCode 11
+        versionName "1.1"
+        multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+
+    android {
+        lintOptions {
+            checkReleaseBuilds false
+            // Or, if you prefer, you can continue to check for errors in release builds,
+            // but continue the build even when errors are found:
+            abortOnError false
+        }
+    }
+
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.3.0'
+    // for sdp
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
+    // load image
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
+    // zoom image
+    implementation 'com.alexvasilkov:gesture-views:2.7.1'
+    // crop
+//    implementation project(':smartcropperlib')
+//    implementation 'com.github.pqpo:SmartCropper:v2.1.3'
+    implementation project(':photo-cropper')
+
+    // signatureview
+    implementation 'com.kyanogen.signatureview:signature-view:1.2'
+    //  filter
+    implementation 'info.androidhive:imagefilters:1.0.7'
+    // rx java
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.14'
+    implementation 'io.reactivex:rxandroid:1.2.1'
+    // qr
+    implementation 'com.budiyev.android:code-scanner:2.1.0'
+    // text Recognized
+    implementation 'com.google.android.gms:play-services-vision:20.1.3'
+    // pdf
+    implementation 'com.itextpdf:itextg:5.5.10'
+    implementation 'com.madgag.spongycastle:core:1.58.0.0'
+    // pdf view
+    implementation 'com.github.afreakyelf:Pdf-Viewer:1.0.7'
+    // Billing for app purchase
+    implementation "com.android.billingclient:billing:3.0.3"
+    // AppMetrica SDK.
+    implementation 'com.yandex.android:mobmetricalib:3.18.0'
+    // onesignal
+    implementation 'com.onesignal:OneSignal:4.3.0'
+    // ads
+    implementation 'com.google.android.gms:play-services-ads:19.8.0'
+    // open ads
+    implementation 'com.google.android.gms:play-services-ads-identifier:17.0.0'
+    implementation 'com.google.android.gms:play-services-base:17.6.0'
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-runtime:2.3.1"
+    //noinspection LifecycleAnnotationProcessorWithJava8
+    annotationProcessor "androidx.lifecycle:lifecycle-compiler:2.3.1"
+
+
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+}

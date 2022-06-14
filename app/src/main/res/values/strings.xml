@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">PDF Scanner - Scan PDF</string>
+    <string name="app_name_2">PDF Scanner</string>
+
+    <string name="permission_txt1">Please allow</string>
+    <string name="permission_txt2">to access camera , pdf file and other files on your device.</string>
+
+
+    <string name="purchase_instruct">
+        • Payment will be charged to google play Account at confirmation of purchase\n\n • Account will be charged for renewal within 24-hours prior to the end of the current period, and identify the cost of the renewal \n\n • Subscriptions may be managed by the user and auto-renewal may be turned off by going to the user\'s Account Settings after purchase \n\n • Any unused portion of a free trial period, if offered, will be forfeited when the user purchases a subscription to that publication, where applicable.
+    </string>
+
+    <string name="publisher">VidSnap</string>
+    <string name="privacy_url">http://www.privacypolicycenter.com/view.php?v=NW9PclR4VDdHQmV0UzZodEIrQlQzQT09&amp;n=PDF-Scanner---Scan-PDF</string>
+    <string name="feedback_email">komalgoyani96@gmail.com</string>
+
+    <string name="app_metrica">bd7d7c2c-1acf-4630-bd8e-a3047f457abd</string>
+    <string name="onesignal_id">664535ee-1c7e-4e0d-848f-90c4d1d2225e</string>
+
+
+    <!-- test id -->
+    <!--        <string name="app_unit_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>-->
+    <!--        <string name="banner_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>-->
+    <!--        <string name="interstitial_id" translatable="false">ca-app-pub-3940256099942544/1033173712</string>-->
+    <!--        <string name="native_app_id" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
+    <!--        <string name="app_open_id" translatable="false">ca-app-pub-3940256099942544/3419835294</string>-->
+
+    <!-- admob id -->
+    <string name="app_unit_id" translatable="false">ca-app-pub-1759497372215819~6500860719</string>
+    <string name="banner_id" translatable="false">ca-app-pub-1759497372215819/6420969669</string>
+    <string name="interstitial_id" translatable="false">ca-app-pub-1759497372215819/8125713828</string>
+    <string name="native_app_id" translatable="false">ca-app-pub-1759497372215819/6812632158</string>
+    <string name="app_open_id" translatable="false">ca-app-pub-1759497372215819/3933325559</string>
+
+    <string name="rate_text" translatable="false">would you mind taking a moment to rate it?\nIt won\'t take more than a minute.</string>
+
+</resources>
