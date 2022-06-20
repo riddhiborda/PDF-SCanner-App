@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/black"
         android:orientation="vertical"
         tools:context=".ui.EditDocumentActivity">
 
@@ -14,7 +13,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/white"
+            android:layout_marginVertical="@dimen/_10sdp"
+            android:background="@color/black"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:layout_collapseMode="pin"
@@ -31,7 +31,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/_7sdp"
                     android:padding="@dimen/_3sdp"
-                    android:src="@drawable/ic_back" />
+                    android:src="@drawable/ic_back"
+                    app:tint="@color/white" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -39,99 +40,109 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:text="Edit Document"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/_15sdp"
                     android:textStyle="normal" />
 
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
-
-            <RelativeLayout
-                android:id="@+id/loutMain"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <com.alexvasilkov.gestures.views.GestureImageView
-                    android:id="@+id/img_display"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-
-                <ImageView
-                    android:id="@+id/image_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:visibility="gone"/>
-
-
-<!--                <com.pdf.scanner.stickerview.TextStickerView-->
-<!--                    android:id="@+id/sticker_view"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="match_parent"-->
-<!--                    app:showBorder="true"-->
-<!--                    app:showIcons="true">-->
-
-<!--                </com.pdf.scanner.stickerview.TextStickerView>-->
-            </RelativeLayout>
-
-        </RelativeLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:background="@drawable/round_cornor_bg"
+            android:orientation="vertical">
+
+            <com.pdfscanner.pdf.scanpdf.Util.RoundedView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:topRightCornerRadius="@dimen/_30sdp"
+                app:topLeftCornerRadius="@dimen/_30sdp">
+
+                <RelativeLayout
+                    android:id="@+id/loutMain"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.alexvasilkov.gestures.views.GestureImageView
+                        android:id="@+id/img_display"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <ImageView
+                        android:id="@+id/image_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone" />
+
+
+                    <!--                <com.pdf.scanner.stickerview.TextStickerView-->
+                    <!--                    android:id="@+id/sticker_view"-->
+                    <!--                    android:layout_width="match_parent"-->
+                    <!--                    android:layout_height="match_parent"-->
+                    <!--                    app:showBorder="true"-->
+                    <!--                    app:showIcons="true">-->
+
+                    <!--                </com.pdf.scanner.stickerview.TextStickerView>-->
+                </RelativeLayout>
+
+            </com.pdfscanner.pdf.scanpdf.Util.RoundedView>
 
             <LinearLayout
-                android:id="@+id/btn_signature"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:paddingTop="@dimen/_3sdp"
-                android:paddingBottom="@dimen/_3sdp">
+                android:orientation="horizontal">
 
-                <ImageView
-                    android:layout_width="@dimen/_30sdp"
-                    android:layout_height="@dimen/_30sdp"
-                    android:src="@drawable/ic_signature" />
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/btn_signature"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_2sdp"
-                    android:text="Signature"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingTop="@dimen/_3sdp"
+                    android:paddingBottom="@dimen/_3sdp">
 
-            </LinearLayout>
+                    <ImageView
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:src="@drawable/ic_signature" />
 
-            <LinearLayout
-                android:id="@+id/btn_save"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:paddingTop="@dimen/_3sdp"
-                android:paddingBottom="@dimen/_3sdp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:text="Signature"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_12sdp" />
 
-                <ImageView
-                    android:layout_width="@dimen/_30sdp"
-                    android:layout_height="@dimen/_30sdp"
-                    android:src="@drawable/ic_save" />
+                </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/btn_save"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_2sdp"
-                    android:text="Save"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_12sdp" />
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingTop="@dimen/_3sdp"
+                    android:paddingBottom="@dimen/_3sdp">
+
+                    <ImageView
+                        android:layout_width="@dimen/_30sdp"
+                        android:layout_height="@dimen/_30sdp"
+                        android:src="@drawable/ic_save" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_2sdp"
+                        android:text="Save"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/_12sdp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

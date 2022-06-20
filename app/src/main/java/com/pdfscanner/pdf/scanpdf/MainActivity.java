@@ -69,6 +69,7 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static android.os.Environment.getExternalStoragePublicDirectory;
+import static com.pdfscanner.pdf.scanpdf.Util.Utils.changeStatusBarColor;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -88,9 +89,7 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
-
-
-        changeSatusbarColor();
+        changeStatusBarColor(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         admobAdManager = AdmobAdManager.getInstance(this);
 
@@ -100,15 +99,6 @@ public class MainActivity extends AppCompatActivity {
         recentDeleteUpdate();
         recentRenameUpdate();
         Constant.showOpenAd();
-    }
-
-    private void changeSatusbarColor() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(MainActivity.this, R.color.black));
-            View decorView = getWindow().getDecorView(); //set status background black
-            decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR); //set status text  light
-        }
-
     }
 
     @Override

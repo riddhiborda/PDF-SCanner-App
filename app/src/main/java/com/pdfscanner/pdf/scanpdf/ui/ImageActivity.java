@@ -1,13 +1,17 @@
 package com.pdfscanner.pdf.scanpdf.ui;
 
+import static com.pdfscanner.pdf.scanpdf.Util.Utils.changeStatusBarColor;
+
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,6 +49,7 @@ public class ImageActivity extends AppCompatActivity implements OnSelectImage {
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+        changeStatusBarColor(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_image);
 //        setContentView(R.layout.activity_image);
         intView();
@@ -195,6 +200,7 @@ public class ImageActivity extends AppCompatActivity implements OnSelectImage {
         binding.navigationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ((TextView)parent.getChildAt(0)).setTextColor(ContextCompat.getColor(ImageActivity.this,R.color.white));
                 if (position != 0) {
                     folderPhotoList.clear();
                     for (int i = 0; i < photoList.size(); i++) {

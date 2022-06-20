@@ -1,5 +1,7 @@
 package com.pdfscanner.pdf.scanpdf.ui;
 
+import static com.pdfscanner.pdf.scanpdf.Util.Utils.changeStatusBarColor;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
@@ -15,6 +17,7 @@ import android.widget.Toast;
 
 import com.pdfscanner.pdf.scanpdf.MainActivity;
 import com.pdfscanner.pdf.scanpdf.R;
+import com.pdfscanner.pdf.scanpdf.Util.Utils;
 import com.pdfscanner.pdf.scanpdf.databinding.ActivitySettingBinding;
 
 public class SettingActivity extends AppCompatActivity {
@@ -27,20 +30,10 @@ public class SettingActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
-        changeSatusbarColor();
+        changeStatusBarColor(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_setting);
         intView();
     }
-
-    private void changeSatusbarColor() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(SettingActivity.this, R.color.black));
-            View decorView = getWindow().getDecorView(); //set status background black
-            decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR); //set status text  light
-        }
-
-    }
-
 
     public void intView() {
 

@@ -1,5 +1,7 @@
 package com.pdfscanner.pdf.scanpdf.ui;
 
+import static com.pdfscanner.pdf.scanpdf.Util.Utils.changeStatusBarColor;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -65,19 +67,11 @@ public class DocumentActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
-        changeSatusbarColor();
+        changeStatusBarColor(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_document);
         admobAdManager = AdmobAdManager.getInstance(this);
         recentUpdate();
         intview();
-    }
-
-    private void changeSatusbarColor() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(DocumentActivity.this, R.color.black));
-            View decorView = getWindow().getDecorView(); //set status background black
-            decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR); //set status text  light
-        }
     }
 
     public void intview() {

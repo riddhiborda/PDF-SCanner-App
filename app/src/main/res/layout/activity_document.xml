@@ -32,9 +32,8 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/_7sdp"
                     android:padding="@dimen/_3sdp"
-                    android:tint="@color/white"
-                    android:src="@drawable/ic_back" />
-
+                    android:src="@drawable/ic_back"
+                    app:tint="@color/white" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -45,6 +44,7 @@
                     android:textSize="@dimen/_15sdp"
                     android:textStyle="normal" />
             </RelativeLayout>
+
         </androidx.appcompat.widget.Toolbar>
 
         <RelativeLayout

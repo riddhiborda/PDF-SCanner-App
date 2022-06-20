@@ -1,13 +1,20 @@
 package com.pdfscanner.pdf.scanpdf.Util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.pdf.PdfRenderer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.ParcelFileDescriptor;
+import android.view.View;
 import android.webkit.MimeTypeMap;
 
+import androidx.core.content.ContextCompat;
+
 import com.itextpdf.text.pdf.PdfReader;
+import com.pdfscanner.pdf.scanpdf.R;
+import com.pdfscanner.pdf.scanpdf.ui.SettingActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -85,5 +92,13 @@ public class Utils {
             if (pdfReader != null) pdfReader.close();
         }
         return isEncrypted;
+    }
+
+    public static void changeStatusBarColor(Activity activity){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            activity.getWindow().setStatusBarColor(ContextCompat.getColor(activity, R.color.black));
+            View decorView = activity.getWindow().getDecorView(); //set status background black
+            decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR); //set status text  light
+        }
     }
 }
