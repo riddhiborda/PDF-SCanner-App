@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/light_white_bg"
+        android:background="@color/black"
         android:orientation="vertical"
         tools:context=".ui.DocumentActivity">
 
         <androidx.appcompat.widget.Toolbar
+            android:layout_marginVertical="@dimen/_15sdp"
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/light_white_bg"
+            android:background="@color/black"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:layout_collapseMode="pin"
@@ -31,27 +32,29 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/_7sdp"
                     android:padding="@dimen/_3sdp"
+                    android:tint="@color/white"
                     android:src="@drawable/ic_back" />
 
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
+                    android:layout_centerInParent="true"
                     android:text="Documents"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/_15sdp"
                     android:textStyle="normal" />
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
 
         <RelativeLayout
+            android:background="@drawable/round_cornor_bg"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
 
             <androidx.recyclerview.widget.RecyclerView
+                android:layout_marginTop="@dimen/_20sdp"
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

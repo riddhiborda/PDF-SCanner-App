@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,6 +29,7 @@ import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.pdfscanner.pdf.scanpdf.MainActivity;
 import com.pdfscanner.pdf.scanpdf.R;
 import com.pdfscanner.pdf.scanpdf.Util.RxBus;
 import com.pdfscanner.pdf.scanpdf.Util.Utils;
@@ -50,10 +52,8 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class DocumentActivity extends AppCompatActivity {
-
     ActivityDocumentBinding binding;
     ArrayList<PdfModel> docList = new ArrayList<>();
-
     DocumentAdapter adapter;
     int pos = -1;
     String[] types = new String[]{".pdf"};
@@ -65,14 +65,22 @@ public class DocumentActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+        changeSatusbarColor();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_document);
         admobAdManager = AdmobAdManager.getInstance(this);
         recentUpdate();
         intview();
     }
 
-    public void intview() {
+    private void changeSatusbarColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(DocumentActivity.this, R.color.black));
+            View decorView = getWindow().getDecorView(); //set status background black
+            decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR); //set status text  light
+        }
+    }
 
+    public void intview() {
         binding.icBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

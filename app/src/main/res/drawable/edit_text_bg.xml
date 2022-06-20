@@ -5,6 +5,6 @@
     <stroke android:color="@color/gray_divider" android:width="@dimen/_1sdp" />
     <solid android:color="@android:color/transparent" />
     <corners
-       android:radius="@dimen/_15sdp"/>
+       android:radius="@dimen/_5sdp"/>
 
 </shape>

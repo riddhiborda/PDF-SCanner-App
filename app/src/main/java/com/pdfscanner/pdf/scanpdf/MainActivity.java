@@ -2,6 +2,7 @@ package com.pdfscanner.pdf.scanpdf;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -27,6 +28,8 @@ import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.Html;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -85,6 +88,9 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+
+
+        changeSatusbarColor();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         admobAdManager = AdmobAdManager.getInstance(this);
 
@@ -94,6 +100,15 @@ public class MainActivity extends AppCompatActivity {
         recentDeleteUpdate();
         recentRenameUpdate();
         Constant.showOpenAd();
+    }
+
+    private void changeSatusbarColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(MainActivity.this, R.color.black));
+            View decorView = getWindow().getDecorView(); //set status background black
+            decorView.setSystemUiVisibility(decorView.getSystemUiVisibility() & ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR); //set status text  light
+        }
+
     }
 
     @Override
@@ -268,10 +283,11 @@ public class MainActivity extends AppCompatActivity {
         binding.btnJpgToPdf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!PreferencesManager.getSubscription(MainActivity.this))
-                    startActivityForResult(new Intent(MainActivity.this, SubscriptionActivity.class),55);
-                else
-                    startActivity(new Intent(MainActivity.this, ImageToPdfActivity.class));
+//                if (!PreferencesManager.getSubscription(MainActivity.this))
+//                    startActivityForResult(new Intent(MainActivity.this, SubscriptionActivity.class),55);
+//                else
+//                    startActivity(new Intent(MainActivity.this, ImageToPdfActivity.class));
+                startActivity(new Intent(MainActivity.this, ImageToPdfActivity.class));
             }
         });
 
