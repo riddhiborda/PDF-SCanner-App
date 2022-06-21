@@ -24,10 +24,20 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.pdfscanner.pdf.scanpdf.Util.RoundedView
             android:layout_width="@dimen/_100sdp"
             android:layout_height="@dimen/_100sdp"
-            android:src="@drawable/ic_app_icon" />
+            app:topRightCornerRadius="@dimen/_7sdp"
+            app:topLeftCornerRadius="@dimen/_7sdp"
+            app:bottomRightCornerRadius="@dimen/_7sdp"
+            app:bottomLeftCornerRadius="@dimen/_7sdp">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_app_icon" />
+
+        </com.pdfscanner.pdf.scanpdf.Util.RoundedView>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
@@ -38,8 +48,10 @@
             android:gravity="center"
             android:text="@string/app_name"
             android:textColor="@color/black"
+            android:fontFamily="@font/sf_pro_bold"
+            android:includeFontPadding="false"
             android:textStyle="bold"
-            android:textSize="@dimen/_26sdp" />
+            android:textSize="@dimen/_24sdp" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txt_dec"
@@ -51,7 +63,9 @@
             android:gravity="center"
             android:text="@string/app_name"
             android:textColor="#7d8794"
-            android:textSize="@dimen/_14sdp" />
+            android:fontFamily="@font/sf_pro_regular"
+            android:includeFontPadding="false"
+            android:textSize="@dimen/_12sdp" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -69,10 +83,11 @@
                 android:layout_height="@dimen/_32sdp"
                 android:gravity="center"
                 android:text="Allow"
-                android:textAllCaps="true"
+                android:fontFamily="@font/sf_pro_semibold"
+                android:includeFontPadding="false"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                android:textSize="@dimen/_11sdp" />
+                android:textSize="@dimen/_13sdp" />
 
         </androidx.cardview.widget.CardView>
 

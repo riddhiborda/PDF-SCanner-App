@@ -46,9 +46,7 @@
                     android:gravity="center"
                     android:singleLine="true"
                     android:text="aa"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_15sdp"
-                    android:textStyle="normal" />
+                    style="@style/common_header_style" />
 
             </RelativeLayout>
 
@@ -100,6 +98,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_2sdp"
                         android:text="Share"
+                        android:fontFamily="@font/sf_pro_regular"
+                        android:includeFontPadding="false"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_12sdp" />
 
@@ -127,6 +127,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_2sdp"
                         android:text="Edit"
+                        android:fontFamily="@font/sf_pro_regular"
+                        android:includeFontPadding="false"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_12sdp" />
 
@@ -153,6 +155,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_2sdp"
                         android:text="Delete"
+                        android:fontFamily="@font/sf_pro_regular"
+                        android:includeFontPadding="false"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_12sdp" />
 

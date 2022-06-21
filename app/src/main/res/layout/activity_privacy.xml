@@ -32,12 +32,11 @@
                 app:tint="@color/white" />
 
             <TextView
+                style="@style/common_header_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="Privacy Policy"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_15sdp" />
+                android:text="Privacy Policy" />
 
         </RelativeLayout>
 

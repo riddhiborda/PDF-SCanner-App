@@ -36,6 +36,7 @@ import java.util.List;
 
 import static com.android.billingclient.api.BillingClient.SkuType.INAPP;
 import static com.android.billingclient.api.BillingClient.SkuType.SUBS;
+import static com.pdfscanner.pdf.scanpdf.Util.Utils.changeStatusBarColor;
 
 public class SubscriptionActivity extends AppCompatActivity {
 
@@ -61,6 +62,7 @@ public class SubscriptionActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+        changeStatusBarColor(this);
         binding = DataBindingUtil.setContentView(this,R.layout.activity_subscription);
         admobAdManager = AdmobAdManager.getInstance(this);
         intView();

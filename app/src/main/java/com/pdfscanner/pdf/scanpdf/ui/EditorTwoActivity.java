@@ -1,5 +1,7 @@
 package com.pdfscanner.pdf.scanpdf.ui;
 
+import static com.pdfscanner.pdf.scanpdf.Util.Utils.changeStatusBarColor;
+
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
@@ -57,6 +59,7 @@ public class EditorTwoActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+        changeStatusBarColor(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_editor_two);
         admobAdManager = AdmobAdManager.getInstance(this);
         intView();

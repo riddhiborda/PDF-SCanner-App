@@ -26,11 +26,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:paddingLeft="@dimen/_22sdp"
-                android:paddingRight="@dimen/_15sdp"
+                android:paddingStart="@dimen/_22sdp"
+                android:paddingEnd="@dimen/_15sdp"
                 android:text="Delete"
+                android:fontFamily="@font/sf_pro_semibold"
+                android:includeFontPadding="false"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_13sdp" />
+                android:textSize="@dimen/_12sdp" />
 
         </LinearLayout>
 
@@ -40,7 +42,7 @@
         android:id="@+id/rowFG"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_56sdp"
-        android:background="@color/white"
+        android:background="@color/rounded_corner_bg_color"
         android:gravity="center_vertical"
         android:orientation="vertical"
         android:paddingLeft="@dimen/_15sdp"
@@ -74,11 +76,12 @@
                     android:layout_alignParentLeft="true"
                     android:layout_marginRight="@dimen/_7sdp"
                     android:ellipsize="middle"
+                    android:fontFamily="@font/sf_pro_semibold"
+                    android:includeFontPadding="false"
                     android:singleLine="true"
                     android:text="File name"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_13sdp"
-                    android:textStyle="normal" />
+                    android:textSize="@dimen/_12sdp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -97,10 +100,11 @@
                         android:singleLine="true"
                         android:text="File name"
                         android:textColor="#555555"
-                        android:textSize="@dimen/_10sdp" />
+                        android:fontFamily="@font/sf_pro_regular"
+                        android:includeFontPadding="false"
+                        android:textSize="@dimen/_9sdp" />
 
                 </LinearLayout>
-
 
             </RelativeLayout>
 

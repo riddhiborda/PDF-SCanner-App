@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardBackgroundColor="@color/white"
-        app:cardElevation="0dp"
-        app:cardCornerRadius="@dimen/_10sdp">
+        app:cardCornerRadius="@dimen/_10sdp"
+        app:cardElevation="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,8 +22,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/_12sdp"
-                android:text="Save to"
                 android:layout_marginBottom="@dimen/_5sdp"
+                android:fontFamily="@font/sf_pro_semibold"
+                android:includeFontPadding="false"
+                android:text="Save to"
                 android:textColor="@color/black"
                 android:textSize="@dimen/_14sdp"
                 android:textStyle="normal" />
@@ -32,30 +34,34 @@
                 android:id="@+id/txt_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/_14sdp"
-                android:textColor="@color/black"
-                android:paddingLeft="@dimen/_16sdp"
-                android:paddingRight="@dimen/_14sdp"
+                android:fontFamily="@font/sf_pro_regular"
+                android:includeFontPadding="false"
+                android:paddingStart="@dimen/_16sdp"
                 android:paddingTop="@dimen/_10sdp"
+                android:paddingEnd="@dimen/_14sdp"
                 android:paddingBottom="@dimen/_10sdp"
-                android:text="Update"/>
+                android:text="Update"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_12sdp" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.7dp"
-                android:background="@color/gray_divider"/>
+                android:background="@color/gray_divider" />
 
             <TextView
                 android:id="@+id/txt_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/_14sdp"
-                android:textColor="@color/black"
-                android:paddingLeft="@dimen/_16sdp"
-                android:paddingRight="@dimen/_14sdp"
+                android:fontFamily="@font/sf_pro_regular"
+                android:includeFontPadding="false"
+                android:paddingStart="@dimen/_16sdp"
                 android:paddingTop="@dimen/_10sdp"
+                android:paddingEnd="@dimen/_14sdp"
                 android:paddingBottom="@dimen/_10sdp"
-                android:text="Add New Document"/>
+                android:text="Add New Document"
+                android:textColor="@color/black"
+                android:textSize="@dimen/_12sdp" />
 
         </LinearLayout>
 

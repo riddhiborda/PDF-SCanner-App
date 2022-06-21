@@ -9,17 +9,28 @@
     android:orientation="vertical"
     tools:context=".ui.SplashActivity">
 
-    <ImageView
+    <com.pdfscanner.pdf.scanpdf.Util.RoundedView
         android:layout_width="@dimen/_110sdp"
         android:layout_height="@dimen/_110sdp"
-        android:src="@drawable/ic_app_icon"/>
+        app:topLeftCornerRadius="@dimen/_7sdp"
+        app:topRightCornerRadius="@dimen/_7sdp"
+        app:bottomLeftCornerRadius="@dimen/_7sdp"
+        app:bottomRightCornerRadius="@dimen/_7sdp">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_app_icon"/>
+
+    </com.pdfscanner.pdf.scanpdf.Util.RoundedView>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/app_name"
         android:textSize="@dimen/_18sdp"
-        android:textStyle="bold"
+        android:fontFamily="@font/sf_pro_bold"
+        android:includeFontPadding="false"
         android:layout_marginTop="@dimen/_10sdp"
         android:textColor="@color/black"/>
 

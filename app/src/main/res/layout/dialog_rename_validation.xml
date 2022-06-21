@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/_5sdp"
     android:orientation="vertical"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="@dimen/_10sdp"
-    android:layout_marginBottom="@dimen/_5sdp"
     app:cardElevation="0dp">
 
     <LinearLayout
@@ -18,13 +18,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/_25sdp"
             android:layout_marginTop="@dimen/_20sdp"
+            android:layout_marginRight="@dimen/_25sdp"
+            android:fontFamily="@font/sf_pro_semibold"
+            android:gravity="center"
+            android:includeFontPadding="false"
             android:text="if you change this file's extension, you may not be able to open it."
             android:textColor="@color/black"
-            android:layout_marginLeft="@dimen/_25sdp"
-            android:layout_marginRight="@dimen/_25sdp"
-            android:gravity="center"
-            android:textSize="@dimen/_11sdp"
+            android:textSize="@dimen/_14sdp"
             android:textStyle="normal" />
 
 
@@ -42,15 +44,17 @@
             <LinearLayout
                 android:id="@+id/btn_cancel"
                 android:layout_width="match_parent"
-                android:layout_toLeftOf="@+id/ll_view"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/ll_view"
                 android:background="?attr/selectableItemBackground">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/sf_pro_regular"
                     android:gravity="center"
+                    android:includeFontPadding="false"
                     android:paddingTop="@dimen/_11sdp"
                     android:paddingBottom="@dimen/_11sdp"
                     android:text="Cancel"
@@ -59,6 +63,7 @@
                     android:textStyle="bold" />
 
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/ll_view"
                 android:layout_width="0.7dp"
@@ -82,18 +87,19 @@
                 android:id="@+id/btn_ok"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_toRightOf="@+id/ll_view"
-                android:background="?attr/selectableItemBackground"
-                >
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@+id/ll_view"
+                android:background="?attr/selectableItemBackground">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/sf_pro_regular"
                     android:gravity="center"
+                    android:includeFontPadding="false"
                     android:paddingTop="@dimen/_11sdp"
                     android:paddingBottom="@dimen/_11sdp"
-                    android:text="OK"
+                    android:text="Ok"
                     android:textColor="@color/blue"
                     android:textSize="@dimen/_13sdp"
                     android:textStyle="normal" />

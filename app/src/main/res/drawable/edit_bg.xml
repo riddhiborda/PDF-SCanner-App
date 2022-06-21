@@ -5,7 +5,12 @@
     <stroke android:color="@color/light_white_bg" android:width="1.5dp"/>
 
     <padding android:top="1.5dp"
-        android:bottom="1.5dp"/>
+        android:bottom="1.5dp"
+        android:left="1.5dp"
+        android:right="1.5dp"/>
+
     <solid android:color="@color/white"/>
+
+    <corners android:radius="@dimen/_10sdp"/>
 
 </shape>

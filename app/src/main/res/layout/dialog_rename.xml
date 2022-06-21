@@ -22,7 +22,8 @@
             android:text="Rename"
             android:textColor="@color/black"
             android:textSize="@dimen/_14sdp"
-            android:textStyle="normal" />
+            android:fontFamily="@font/sf_pro_semibold"
+            android:includeFontPadding="false" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
@@ -56,6 +57,8 @@
                 android:inputType="text"
                 android:singleLine="true"
                 android:text=""
+                android:fontFamily="@font/sf_pro_regular"
+                android:includeFontPadding="false"
                 android:textColor="@color/black"
                 android:textColorHint="@color/colorAccent"
                 android:textSize="@dimen/_13sdp" />
@@ -88,6 +91,8 @@
                     android:paddingTop="@dimen/_11sdp"
                     android:paddingBottom="@dimen/_11sdp"
                     android:text="Cancel"
+                    android:fontFamily="@font/sf_pro_regular"
+                    android:includeFontPadding="false"
                     android:textColor="@color/txt_gray_dark"
                     android:textSize="@dimen/_13sdp"
                     android:textStyle="normal" />
@@ -127,6 +132,8 @@
                     android:paddingTop="@dimen/_11sdp"
                     android:paddingBottom="@dimen/_11sdp"
                     android:text="OK"
+                    android:fontFamily="@font/sf_pro_regular"
+                    android:includeFontPadding="false"
                     android:textColor="@color/blue"
                     android:textSize="@dimen/_13sdp"
                     android:textStyle="normal" />

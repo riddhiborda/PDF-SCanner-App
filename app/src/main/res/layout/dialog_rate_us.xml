@@ -43,10 +43,12 @@
                     android:layout_marginLeft="@dimen/_12sdp"
                     android:layout_marginTop="@dimen/_18sdp"
                     android:layout_marginRight="@dimen/_12sdp"
+                    android:fontFamily="@font/sf_pro_semibold"
                     android:gravity="center"
+                    android:includeFontPadding="false"
                     android:text="Enjoying the app?"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/_18sdp" />
+                    android:textSize="@dimen/_16sdp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -55,11 +57,13 @@
                     android:layout_marginLeft="@dimen/_5sdp"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_5sdp"
+                    android:fontFamily="@font/sf_pro_regular"
                     android:gravity="center"
+                    android:includeFontPadding="false"
                     android:singleLine="false"
                     android:text="@string/rate_text"
                     android:textColor="@color/gray_text_home"
-                    android:textSize="@dimen/_13sdp"
+                    android:textSize="@dimen/_12sdp"
                     android:visibility="visible" />
 
                 <!--    <TextView
@@ -99,7 +103,9 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:background="@drawable/rate_btn"
+                        android:fontFamily="@font/sf_pro_regular"
                         android:gravity="center"
+                        android:includeFontPadding="false"
                         android:padding="@dimen/_10sdp"
                         android:text="Rate Now"
                         android:textColor="@color/white"

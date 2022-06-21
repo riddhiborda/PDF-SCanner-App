@@ -38,11 +38,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
+                    android:layout_centerInParent="true"
                     android:text="Image To PDF"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_15sdp" />
+                    style="@style/common_header_style" />
 
             </RelativeLayout>
 
@@ -67,13 +65,14 @@
 
                 <TextView
                     android:id="@+id/txt_select_image"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="Select Images"
-                    android:textAllCaps="true"
                     android:textColor="@color/white"
+                    android:fontFamily="@font/sf_pro_regular"
+                    android:includeFontPadding="false"
                     android:textSize="@dimen/_12sdp"
                     android:textStyle="bold" />
 
@@ -92,15 +91,16 @@
 
                 <TextView
                     android:id="@+id/txt_create_pdf"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
+                    android:fontFamily="@font/sf_pro_regular"
+                    android:includeFontPadding="false"
                     android:text="Create PDF"
-                    android:textAllCaps="true"
+                    android:textStyle="bold"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_12sdp"
-                    android:textStyle="bold" />
+                    android:textSize="@dimen/_12sdp" />
 
             </androidx.cardview.widget.CardView>
 
@@ -143,8 +143,10 @@
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/_15sdp"
                 android:text="Recent Files"
+                android:fontFamily="@font/sf_pro_semibold"
+                android:includeFontPadding="false"
                 android:textColor="#555555"
-                android:textSize="@dimen/_12sdp" />
+                android:textSize="@dimen/_13sdp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -175,9 +177,11 @@
                 android:gravity="center"
                 android:paddingLeft="@dimen/_10sdp"
                 android:paddingRight="@dimen/_10sdp"
+                android:fontFamily="@font/sf_pro_regular"
+                android:includeFontPadding="false"
                 android:text="No image(s) selected."
                 android:textColor="@color/white"
-                android:textSize="@dimen/_10sdp" />
+                android:textSize="@dimen/_12sdp" />
 
         </LinearLayout>
 
