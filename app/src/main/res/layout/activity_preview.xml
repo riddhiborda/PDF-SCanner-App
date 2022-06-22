@@ -105,6 +105,7 @@
                     android:layout_marginTop="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_15sdp"
                     app:cardBackgroundColor="@color/green"
+                    android:visibility="gone"
                     app:cardCornerRadius="@dimen/_4sdp"
                     app:cardElevation="0dp">
 

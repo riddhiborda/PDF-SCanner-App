@@ -203,9 +203,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void intView() {
 
-        if (!PreferencesManager.getSubscription(MainActivity.this)) {
+        /*if (!PreferencesManager.getSubscription(MainActivity.this)) {
             startActivity(new Intent(MainActivity.this, SubscriptionActivity.class).putExtra("ShowAd", true));
-        }
+        }*/
 
         binding.ivSetting.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -281,12 +281,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        binding.ivPremium.setOnClickListener(new View.OnClickListener() {
+        /*binding.ivPremium.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, SubscriptionActivity.class));
             }
-        });
+        });*/
 
 //        if (PreferencesManager.getSubscription(MainActivity.this)) {
 //            binding.ivPremium.setVisibility(View.GONE);
