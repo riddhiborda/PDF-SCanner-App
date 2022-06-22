@@ -37,11 +37,11 @@
 
 
                 <TextView
+                    style="@style/common_header_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:text="Preview"
-                    style="@style/common_header_style" />
+                    android:text="Preview" />
 
             </RelativeLayout>
 

@@ -1,5 +1,7 @@
 package com.pdfscanner.pdf.scanpdf.ui;
 
+import static com.pdfscanner.pdf.scanpdf.Util.Utils.changeStatusBarColor;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -33,6 +35,7 @@ public class PermissionActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT != Build.VERSION_CODES.O) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+        changeStatusBarColor(this);
         setContentView(R.layout.activity_permission);
 
         intView();

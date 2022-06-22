@@ -1,43 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/black"
+    android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/white"
+        android:layout_marginVertical="@dimen/_10sdp"
+        android:background="@color/black"
+        android:visibility="visible"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:layout_collapseMode="pin"
-        android:visibility="gone"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/llMainContainer"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/llMainContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/round_cornor_bg"
         android:gravity="center"
-        android:orientation="vertical">
-
-        <com.pdfscanner.pdf.scanpdf.Util.RoundedView
-            android:layout_width="@dimen/_100sdp"
-            android:layout_height="@dimen/_100sdp"
-            app:topRightCornerRadius="@dimen/_7sdp"
-            app:topLeftCornerRadius="@dimen/_7sdp"
-            app:bottomRightCornerRadius="@dimen/_7sdp"
-            app:bottomLeftCornerRadius="@dimen/_7sdp">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_app_icon" />
-
-        </com.pdfscanner.pdf.scanpdf.Util.RoundedView>
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
@@ -45,13 +41,13 @@
             android:layout_marginStart="@dimen/_25sdp"
             android:layout_marginTop="@dimen/_15sdp"
             android:layout_marginEnd="@dimen/_25sdp"
+            android:fontFamily="@font/sf_pro_bold"
             android:gravity="center"
+            android:includeFontPadding="false"
             android:text="@string/app_name"
             android:textColor="@color/black"
-            android:fontFamily="@font/sf_pro_bold"
-            android:includeFontPadding="false"
-            android:textStyle="bold"
-            android:textSize="@dimen/_24sdp" />
+            android:textSize="@dimen/_24sdp"
+            android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txt_dec"
@@ -60,37 +56,56 @@
             android:layout_marginStart="@dimen/_35sdp"
             android:layout_marginTop="@dimen/_9sdp"
             android:layout_marginEnd="@dimen/_35sdp"
+            android:fontFamily="@font/sf_pro_regular"
             android:gravity="center"
+            android:includeFontPadding="false"
             android:text="@string/app_name"
             android:textColor="#7d8794"
-            android:fontFamily="@font/sf_pro_regular"
-            android:includeFontPadding="false"
             android:textSize="@dimen/_12sdp" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_32sdp"
-            app:cardBackgroundColor="@color/black"
-            app:cardElevation="0dp"
             android:layout_marginLeft="@dimen/_60sdp"
+            android:layout_marginTop="@dimen/_32sdp"
             android:layout_marginRight="@dimen/_60sdp"
-            app:cardCornerRadius="@dimen/_15sdp">
+            app:cardBackgroundColor="@color/black"
+            app:cardCornerRadius="@dimen/_15sdp"
+            app:cardElevation="0dp">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/btn_allow"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_32sdp"
-                android:gravity="center"
-                android:text="Allow"
                 android:fontFamily="@font/sf_pro_semibold"
+                android:gravity="center"
                 android:includeFontPadding="false"
+                android:text="Allow"
                 android:textColor="@color/white"
-                android:textStyle="bold"
-                android:textSize="@dimen/_13sdp" />
+                android:textSize="@dimen/_13sdp"
+                android:textStyle="bold" />
 
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 
-</LinearLayout>
+    <com.pdfscanner.pdf.scanpdf.Util.RoundedView
+        android:layout_width="@dimen/_80sdp"
+        android:layout_height="@dimen/_80sdp"
+        app:bottomLeftCornerRadius="@dimen/_10sdp"
+        app:bottomRightCornerRadius="@dimen/_10sdp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/llMainContainer"
+        app:layout_constraintBottom_toTopOf="@+id/llMainContainer"
+        app:topLeftCornerRadius="@dimen/_10sdp"
+        app:topRightCornerRadius="@dimen/_10sdp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_app_icon" />
+
+    </com.pdfscanner.pdf.scanpdf.Util.RoundedView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

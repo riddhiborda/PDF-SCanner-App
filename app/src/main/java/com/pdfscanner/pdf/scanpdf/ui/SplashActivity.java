@@ -6,12 +6,19 @@ import androidx.core.app.ActivityCompat;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.BoringLayout;
+import android.text.Layout;
+import android.text.TextPaint;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.billingclient.api.BillingClient;
@@ -43,6 +50,20 @@ public class SplashActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         setContentView(R.layout.activity_splash);
         admobAdManager = AdmobAdManager.getInstance(this);
+
+        TextView textView = findViewById(R.id.tvTitle);
+
+        TextPaint paint = textView.getPaint();
+        float width = paint.measureText(getString(R.string.app_name));
+
+        Shader textShader = new LinearGradient(0, 0, width, textView.getTextSize(),
+                new int[]{
+                        Color.parseColor("#00D8FF"),
+                        Color.parseColor("#FFFFFF"),
+                }, null, Shader.TileMode.CLAMP);
+
+        textView.getPaint().setShader(textShader);
+
 
         admobAdManager.loadInterstitialAd(SplashActivity.this, getResources().getString(R.string.interstitial_id));
 
