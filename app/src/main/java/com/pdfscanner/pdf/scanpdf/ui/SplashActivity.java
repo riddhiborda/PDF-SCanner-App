@@ -1,5 +1,6 @@
 package com.pdfscanner.pdf.scanpdf.ui;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -16,6 +17,7 @@ import android.os.Looper;
 import android.text.BoringLayout;
 import android.text.Layout;
 import android.text.TextPaint;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -26,9 +28,16 @@ import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.pdfscanner.pdf.scanpdf.MainActivity;
 import com.pdfscanner.pdf.scanpdf.R;
+import com.pdfscanner.pdf.scanpdf.Util.Constant;
 import com.pdfscanner.pdf.scanpdf.Util.PreferencesManager;
+import com.pdfscanner.pdf.scanpdf.Util.Utils;
 import com.pdfscanner.pdf.scanpdf.ad.AdmobAdManager;
 import com.pdfscanner.pdf.scanpdf.service.ImageDataService;
 
@@ -64,8 +73,14 @@ public class SplashActivity extends AppCompatActivity {
 
         textView.getPaint().setShader(textShader);
 
+        Utils.getAdsIds(SplashActivity.this);
+        Utils.getAdsCounter(SplashActivity.this);
 
-        admobAdManager.loadInterstitialAd(SplashActivity.this, getResources().getString(R.string.interstitial_id));
+        if (PreferencesManager.getString(SplashActivity.this,Constant.INTERSTITIAL_ID).isEmpty()){
+            Utils.getAdsIds(SplashActivity.this);
+        }else {
+            admobAdManager.loadInterstitialAd(SplashActivity.this, PreferencesManager.getString(SplashActivity.this,Constant.INTERSTITIAL_ID));
+        }
 
         boolean isPermission = isPermissionGranted();
         if (isPermission) {

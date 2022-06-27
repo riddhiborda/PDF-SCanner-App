@@ -34,6 +34,7 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.pdfscanner.pdf.scanpdf.MainActivity;
 import com.pdfscanner.pdf.scanpdf.R;
 import com.pdfscanner.pdf.scanpdf.Util.Constant;
 import com.pdfscanner.pdf.scanpdf.Util.PreferencesManager;
@@ -591,17 +592,31 @@ public class EditDocumentActivity extends AppCompatActivity {
                         RxBus.getInstance().post(new HomeUpdate(mPath));
                     }
 
-                    Toast.makeText(EditDocumentActivity.this, "Document save successfully", Toast.LENGTH_SHORT).show();
+                    int counter = PreferencesManager.getInteger(EditDocumentActivity.this,Constant.EDIT_DOCUMENT);
+                    PreferencesManager.saveInteger(EditDocumentActivity.this,Constant.EDIT_DOCUMENT,counter + 1);
 
-                    admobAdManager.loadInterstitialAd(EditDocumentActivity.this, getResources().getString(R.string.interstitial_id), 1, new AdmobAdManager.OnAdClosedListener() {
-                        @Override
-                        public void onAdClosed(Boolean isShowADs) {
-
+                    if (!PreferencesManager.getString(EditDocumentActivity.this,Constant.INTERSTITIAL_ID).isEmpty()){
+                        if (counter == PreferencesManager.getInteger(EditDocumentActivity.this,Constant.ADS_COUNTER)){
+                            admobAdManager.loadInterstitialAd(EditDocumentActivity.this, PreferencesManager.getString(EditDocumentActivity.this,Constant.INTERSTITIAL_ID), 1, new AdmobAdManager.OnAdClosedListener() {
+                                @Override
+                                public void onAdClosed(Boolean isShowADs) {
+                                    Toast.makeText(EditDocumentActivity.this, "Document save successfully", Toast.LENGTH_SHORT).show();
+                                    PreferencesManager.saveInteger(EditDocumentActivity.this,Constant.EDIT_DOCUMENT,0);
+                                    setResult(RESULT_OK);
+                                    finish();
+                                }
+                            });
+                        }else {
+                            Toast.makeText(EditDocumentActivity.this, "Document save successfully", Toast.LENGTH_SHORT).show();
+                            setResult(RESULT_OK);
+                            finish();
                         }
-                    });
-
-                    setResult(RESULT_OK);
-                    finish();
+                    }else {
+                        Utils.getAdsIds(EditDocumentActivity.this);
+                        Toast.makeText(EditDocumentActivity.this, "Document save successfully", Toast.LENGTH_SHORT).show();
+                        setResult(RESULT_OK);
+                        finish();
+                    }
 
                 } else {
                     Toast.makeText(EditDocumentActivity.this, "error", Toast.LENGTH_SHORT).show();

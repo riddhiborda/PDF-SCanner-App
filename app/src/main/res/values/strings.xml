@@ -19,18 +19,18 @@
 
 
     <!-- test id -->
-    <!--        <string name="app_unit_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>-->
-    <!--        <string name="banner_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>-->
-    <!--        <string name="interstitial_id" translatable="false">ca-app-pub-3940256099942544/1033173712</string>-->
-    <!--        <string name="native_app_id" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
-    <!--        <string name="app_open_id" translatable="false">ca-app-pub-3940256099942544/3419835294</string>-->
+    <string name="app_unit_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="banner_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="interstitial_id" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="native_app_id" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="app_open_id" translatable="false">ca-app-pub-3940256099942544/3419835294</string>
 
     <!-- admob id -->
-    <string name="app_unit_id" translatable="false">ca-app-pub-1759497372215819~6500860719</string>
+    <!--<string name="app_unit_id" translatable="false">ca-app-pub-1759497372215819~6500860719</string>
     <string name="banner_id" translatable="false">ca-app-pub-1759497372215819/6420969669</string>
     <string name="interstitial_id" translatable="false">ca-app-pub-1759497372215819/8125713828</string>
     <string name="native_app_id" translatable="false">ca-app-pub-1759497372215819/6812632158</string>
-    <string name="app_open_id" translatable="false">ca-app-pub-1759497372215819/3933325559</string>
+    <string name="app_open_id" translatable="false">ca-app-pub-1759497372215819/3933325559</string>-->
 
     <string name="rate_text" translatable="false">would you mind taking a moment to rate it?\nIt won\'t take more than a minute.</string>
 

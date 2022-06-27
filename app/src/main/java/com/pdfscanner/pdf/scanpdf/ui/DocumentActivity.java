@@ -33,6 +33,8 @@ import android.widget.Toast;
 
 import com.pdfscanner.pdf.scanpdf.MainActivity;
 import com.pdfscanner.pdf.scanpdf.R;
+import com.pdfscanner.pdf.scanpdf.Util.Constant;
+import com.pdfscanner.pdf.scanpdf.Util.PreferencesManager;
 import com.pdfscanner.pdf.scanpdf.Util.RxBus;
 import com.pdfscanner.pdf.scanpdf.Util.Utils;
 import com.pdfscanner.pdf.scanpdf.ad.AdEventListener;
@@ -87,22 +89,26 @@ public class DocumentActivity extends AppCompatActivity {
 
     private void loadbanner() {
         if (docList != null && docList.size() != 0) {
-        admobAdManager.LoadAdaptiveBanner(this, binding.loutBanner, getResources().getString(R.string.banner_id), new AdEventListener() {
-            @Override
-            public void onAdLoaded(Object object) {
-                binding.loutBanner.setVisibility(View.VISIBLE);
-            }
+            if (!PreferencesManager.getString(DocumentActivity.this, Constant.BANNER_ID).isEmpty()) {
+                admobAdManager.LoadAdaptiveBanner(this, binding.loutBanner, PreferencesManager.getString(DocumentActivity.this, Constant.BANNER_ID), new AdEventListener() {
+                    @Override
+                    public void onAdLoaded(Object object) {
+                        binding.loutBanner.setVisibility(View.VISIBLE);
+                    }
 
-            @Override
-            public void onAdClosed() {
+                    @Override
+                    public void onAdClosed() {
 
-            }
+                    }
 
-            @Override
-            public void onLoadError(String errorCode) {
-                binding.loutBanner.setVisibility(View.GONE);
+                    @Override
+                    public void onLoadError(String errorCode) {
+                        binding.loutBanner.setVisibility(View.GONE);
+                    }
+                });
+            }else {
+                Utils.getAdsIds(DocumentActivity.this);
             }
-        });
         }
     }
 

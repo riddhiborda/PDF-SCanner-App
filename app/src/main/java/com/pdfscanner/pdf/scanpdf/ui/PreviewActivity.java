@@ -26,6 +26,7 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.pdfscanner.pdf.scanpdf.MainActivity;
 import com.pdfscanner.pdf.scanpdf.R;
 import com.pdfscanner.pdf.scanpdf.Util.Constant;
 import com.pdfscanner.pdf.scanpdf.Util.PreferencesManager;
@@ -65,12 +66,23 @@ public class PreviewActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_preview);
 
         admobAdManager = AdmobAdManager.getInstance(this);
-        admobAdManager.loadInterstitialAd(PreviewActivity.this, getResources().getString(R.string.interstitial_id), 1, new AdmobAdManager.OnAdClosedListener() {
-            @Override
-            public void onAdClosed(Boolean isShowADs) {
 
+        int counter = PreferencesManager.getInteger(PreviewActivity.this,Constant.PREVIEW);
+        PreferencesManager.saveInteger(PreviewActivity.this,Constant.PREVIEW,counter + 1);
+
+        if (!PreferencesManager.getString(PreviewActivity.this,Constant.INTERSTITIAL_ID).isEmpty()){
+            if (counter == PreferencesManager.getInteger(PreviewActivity.this,Constant.ADS_COUNTER)){
+                admobAdManager.loadInterstitialAd(PreviewActivity.this, PreferencesManager.getString(PreviewActivity.this,Constant.INTERSTITIAL_ID), 1, new AdmobAdManager.OnAdClosedListener() {
+                    @Override
+                    public void onAdClosed(Boolean isShowADs) {
+                        PreferencesManager.saveInteger(PreviewActivity.this,Constant.PREVIEW,0);
+                    }
+                });
             }
-        });
+        }else {
+            Utils.getAdsIds(PreviewActivity.this);
+        }
+
         intView();
     }
 
@@ -380,17 +392,34 @@ public class PreviewActivity extends AppCompatActivity {
                         loadingDialog.dismiss();
                     }
 
-                    Toast.makeText(PreviewActivity.this, type + " save successfully", Toast.LENGTH_SHORT).show();
 //                    Toast.makeText(PreviewActivity.this, "Cretae pdf successfully", Toast.LENGTH_SHORT).show();
                     if (isOriginalClick) {
-                        admobAdManager.loadInterstitialAd(PreviewActivity.this, getResources().getString(R.string.interstitial_id), 1, new AdmobAdManager.OnAdClosedListener() {
-                            @Override
-                            public void onAdClosed(Boolean isShowADs) {
+                        int counter = PreferencesManager.getInteger(PreviewActivity.this,Constant.PREVIEW_ORIGINAL);
+                        PreferencesManager.saveInteger(PreviewActivity.this,Constant.PREVIEW_ORIGINAL,counter + 1);
 
+                        if (!PreferencesManager.getString(PreviewActivity.this,Constant.INTERSTITIAL_ID).isEmpty()){
+                            if (counter == PreferencesManager.getInteger(PreviewActivity.this,Constant.ADS_COUNTER)){
+                                admobAdManager.loadInterstitialAd(PreviewActivity.this, PreferencesManager.getString(PreviewActivity.this,Constant.INTERSTITIAL_ID), 1, new AdmobAdManager.OnAdClosedListener() {
+                                    @Override
+                                    public void onAdClosed(Boolean isShowADs) {
+                                        PreferencesManager.saveInteger(PreviewActivity.this,Constant.PREVIEW_ORIGINAL,0);
+                                        Toast.makeText(PreviewActivity.this, type + " save successfully", Toast.LENGTH_SHORT).show();
+                                        finish();
+                                    }
+                                });
+                            }else {
+                                Toast.makeText(PreviewActivity.this, type + " save successfully", Toast.LENGTH_SHORT).show();
+                                finish();
                             }
-                        });
+                        }else {
+                            Utils.getAdsIds(PreviewActivity.this);
+                            Toast.makeText(PreviewActivity.this, type + " save successfully", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    }else {
+                        Toast.makeText(PreviewActivity.this, type + " save successfully", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
-                    finish();
 
                 } else {
                     if (loadingDialog != null) {

@@ -53,6 +53,7 @@ import com.pdfscanner.pdf.scanpdf.ui.ImageShowActivity;
 import com.pdfscanner.pdf.scanpdf.ui.ImageToPdfActivity;
 import com.pdfscanner.pdf.scanpdf.ui.QrScanActivity;
 import com.pdfscanner.pdf.scanpdf.ui.SettingActivity;
+import com.pdfscanner.pdf.scanpdf.ui.SplashActivity;
 import com.pdfscanner.pdf.scanpdf.ui.SubscriptionActivity;
 
 import java.io.File;
@@ -219,13 +220,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 type = Constant.document;
-                admobAdManager.loadInterstitialAd(MainActivity.this, getResources().getString(R.string.interstitial_id), 3, new AdmobAdManager.OnAdClosedListener() {
-                    @Override
-                    public void onAdClosed(Boolean isShowADs) {
+                int counter = PreferencesManager.getInteger(MainActivity.this,Constant.MAIN_ACTIVITY);
+                PreferencesManager.saveInteger(MainActivity.this,Constant.MAIN_ACTIVITY,counter + 1);
+
+                if (!PreferencesManager.getString(MainActivity.this,Constant.INTERSTITIAL_ID).isEmpty()){
+                    if (counter == PreferencesManager.getInteger(MainActivity.this,Constant.ADS_COUNTER)){
+                        admobAdManager.loadInterstitialAd(MainActivity.this, PreferencesManager.getString(MainActivity.this,Constant.INTERSTITIAL_ID), 3, new AdmobAdManager.OnAdClosedListener() {
+                            @Override
+                            public void onAdClosed(Boolean isShowADs) {
+                                PreferencesManager.saveInteger(MainActivity.this,Constant.MAIN_ACTIVITY,0);
+                                getImgFromCamera();
+                            }
+                        });
+                    }else {
                         getImgFromCamera();
                     }
-                });
-
+                }else {
+                    Utils.getAdsIds(MainActivity.this);
+                    getImgFromCamera();
+                }
             }
         });
 

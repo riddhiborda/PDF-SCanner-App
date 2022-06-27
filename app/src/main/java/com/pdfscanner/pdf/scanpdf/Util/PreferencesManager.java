@@ -51,5 +51,32 @@ public class PreferencesManager {
                 Constant.SHARED_PREFS, Context.MODE_PRIVATE);
         return preferences.getString(Constant.SHARED_PREFS_SUBSCRIPTION_DATE,"");
     }
-    
+
+    public static void saveInteger(Context context, String key, int value){
+        SharedPreferences preferences = context.getSharedPreferences(
+                Constant.SHARED_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putInt(key, value);
+        editor.commit();
+    }
+
+    public static int getInteger(Context context, String key){
+        SharedPreferences preferences = context.getSharedPreferences(
+                Constant.SHARED_PREFS, Context.MODE_PRIVATE);
+        return preferences.getInt(key,0);
+    }
+
+    public static void saveString(Context context, String key, String value){
+        SharedPreferences preferences = context.getSharedPreferences(
+                Constant.SHARED_PREFS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(key, value);
+        editor.commit();
+    }
+
+    public static String getString(Context context, String key){
+        SharedPreferences preferences = context.getSharedPreferences(
+                Constant.SHARED_PREFS, Context.MODE_PRIVATE);
+        return preferences.getString(key,"");
+    }
 }

@@ -39,4 +39,15 @@ public class Constant {
         SHOW_OPEN_ADS = false;
     }
 
+    public static String APP_OPEN_ID = "app_open_id";
+    public static String APP_UNIT_ID = "app_unit_id";
+    public static String BANNER_ID = "banner_id";
+    public static String INTERSTITIAL_ID = "interstitial_id";
+    public static String NATIVE_APP_ID = "native_app_id";
+
+    public static String MAIN_ACTIVITY = "main_activity";
+    public static String EDIT_DOCUMENT = "edit_document";
+    public static String PREVIEW = "preview";
+    public static String PREVIEW_ORIGINAL = "preview_Original";
+    public static String ADS_COUNTER = "AdsCounter";
 }

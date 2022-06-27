@@ -131,9 +131,9 @@ public class AdmobAdManager {
 
     public void loadInterstitialAd(Activity context, String interstitialAdID, int number, OnAdClosedListener onAdClosedListener) {
         if (getShowAds(context)) {
-            Random random = new Random();
+            /*Random random = new Random();
             int r = random.nextInt(number);
-            if (number == 1 || r == 1) {
+            if (number == 1 || r == 1) {*/
                 if (interstitialAd != null) {
                     if (isAdLoad && !isAdLoadFailed && !isAdLoadProcessing) {
 
@@ -182,9 +182,9 @@ public class AdmobAdManager {
                     }
                     onAdClosedListener.onAdClosed(false);
                 }
-            } else {
+            /*} else {
                 onAdClosedListener.onAdClosed(false);
-            }
+            }*/
         } else {
             onAdClosedListener.onAdClosed(false);
         }
