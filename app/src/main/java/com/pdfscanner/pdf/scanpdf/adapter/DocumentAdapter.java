@@ -17,7 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.pdfscanner.pdf.scanpdf.R;
 import com.pdfscanner.pdf.scanpdf.Util.Utils;
-import com.pdfscanner.pdf.scanpdf.model.PdfModel;
+import com.pdfscanner.pdf.scanpdf.model.PDFModel;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -28,10 +28,10 @@ public class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.ViewHo
 
     Context context;
     private static ClickListener listener;
-    ArrayList<PdfModel> list;
+    ArrayList<PDFModel> list;
 
 
-    public DocumentAdapter(Context context, ArrayList<PdfModel> list) {
+    public DocumentAdapter(Context context, ArrayList<PDFModel> list) {
         this.context = context;
         this.list = list;
 

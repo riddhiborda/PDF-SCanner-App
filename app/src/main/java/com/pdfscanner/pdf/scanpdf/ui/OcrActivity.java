@@ -40,7 +40,7 @@ import com.pdfscanner.pdf.scanpdf.Util.Constant;
 import com.pdfscanner.pdf.scanpdf.Util.RxBus;
 import com.pdfscanner.pdf.scanpdf.Util.Utils;
 import com.pdfscanner.pdf.scanpdf.databinding.ActivityOcrBinding;
-import com.pdfscanner.pdf.scanpdf.listener.HomeUpdate;
+import com.pdfscanner.pdf.scanpdf.model.home.Update;
 import com.pdfscanner.pdf.scanpdf.pdf.ImageToPDFOptions;
 
 import java.io.File;
@@ -52,18 +52,14 @@ import io.reactivex.Observable;
 public class OcrActivity extends AppCompatActivity {
 
     ActivityOcrBinding binding;
-
     Bitmap bitmap;
-
     TextRecognizer textRecognizer;
     SparseArray<TextBlock> textBlocks;
     String copyText;
-
     int imageQuality = 30;
     ImageToPDFOptions mPdfOptions;
     private int mPageColor;
     private String mPageNumStyle;
-
     ProgressDialog loadingDialog;
 
     @Override
@@ -75,10 +71,12 @@ public class OcrActivity extends AppCompatActivity {
         changeStatusBarColor(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_ocr);
 
-        intView();
+        initData();
+        initClick();
+        initProgress();
     }
 
-    public void intView() {
+    private void initData() {
         bitmap = Constant.cropBitmap1;
 
         binding.imageView.setImageBitmap(bitmap);
@@ -86,50 +84,35 @@ public class OcrActivity extends AppCompatActivity {
         textRecognizer = new TextRecognizer.Builder(OcrActivity.this).build();
 
         getOcrData();
+    }
 
+    private void initClick() {
+        binding.btnCopy.setOnClickListener(v -> {
+            if (copyText != null) {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("label", copyText);
+                if (clipboard == null || clip == null) return;
+                clipboard.setPrimaryClip(clip);
 
-        binding.btnCopy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                Toast.makeText(OcrActivity.this, "Text copied!", Toast.LENGTH_SHORT).show();
 
-                if (copyText != null) {
-
-                    ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("label", copyText);
-                    if (clipboard == null || clip == null) return;
-                    clipboard.setPrimaryClip(clip);
-
-                    Toast.makeText(OcrActivity.this, "Text copied!", Toast.LENGTH_SHORT).show();
-
-                } else {
-                    Toast.makeText(OcrActivity.this, "Text not recognized", Toast.LENGTH_SHORT).show();
-                }
+            } else {
+                Toast.makeText(OcrActivity.this, "Text not recognized", Toast.LENGTH_SHORT).show();
             }
         });
 
-        binding.btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveImage();
-            }
-        });
+        binding.btnSave.setOnClickListener(v -> saveImage());
 
-        binding.icBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        binding.icBack.setOnClickListener(v -> onBackPressed());
+    }
 
+    private void initProgress() {
         loadingDialog = new ProgressDialog(this);
         loadingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         loadingDialog.setCancelable(false);
         loadingDialog.setMessage("Saving...");
-//            loadingDialog.setMessage("Create pdf...");
         loadingDialog.setCanceledOnTouchOutside(false);
-
     }
-
 
     public void seTexttData() {
 
@@ -234,11 +217,8 @@ public class OcrActivity extends AppCompatActivity {
     }
 
     public void setPdfIntview() {
-
         mPdfOptions = new ImageToPDFOptions();
-
         mPdfOptions.setBorderWidth(0);
-
         mPageColor = Color.WHITE;
         mPdfOptions.setQualityString(Integer.toString(imageQuality));
         mPdfOptions.setPageSize("A4");
@@ -247,17 +227,14 @@ public class OcrActivity extends AppCompatActivity {
         mPdfOptions.setMasterPwd("PDF Converter");
         mPdfOptions.setPageColor(mPageColor);
         mPdfOptions.setMargins(0, 0, 0, 0);
-
     }
 
     public void saveImage() {
-
         if (loadingDialog != null) {
             loadingDialog.setMessage("Saving...");
             loadingDialog.show();
         }
         setPdfIntview();
-
         new Thread(OcrActivity.this::cratePdfFile).start();
     }
 
@@ -450,7 +427,7 @@ public class OcrActivity extends AppCompatActivity {
                         }
                     });
 
-                    RxBus.getInstance().post(new HomeUpdate(mPath));
+                    RxBus.getInstance().post(new Update(mPath));
 
                     Toast.makeText(OcrActivity.this, "OCR save successfully", Toast.LENGTH_SHORT).show();
 //                    Toast.makeText(OcrActivity.this, "Cretae pdf successfully", Toast.LENGTH_SHORT).show();

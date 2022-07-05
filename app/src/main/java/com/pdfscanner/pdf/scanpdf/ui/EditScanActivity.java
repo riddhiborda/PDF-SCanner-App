@@ -37,11 +37,11 @@ public class EditScanActivity extends AppCompatActivity {
         changeStatusBarColor(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_scan);
 
-        intView();
+        initData();
+        initClick();
     }
 
-    public void intView() {
-//        file
+    private void initData() {
         Intent intent = getIntent();
 
         if (intent != null) {
@@ -53,77 +53,57 @@ public class EditScanActivity extends AppCompatActivity {
 
             if (type.equalsIgnoreCase(Constant.business) || type.equalsIgnoreCase(Constant.idCard)) {
                 imageCount = intent.getIntExtra("imageCount", 1);
-
                 if (imageCount == 2){
-                    new Handler(Looper.myLooper()).postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Constant.showOpenAd();
-                        }
-                    }, 1000);
+                    new Handler(Looper.myLooper()).postDelayed(() -> Constant.showOpenAd(), 1000);
                 }
             } else {
-                new Handler(Looper.myLooper()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Constant.showOpenAd();
-                    }
-                }, 1000);
+                new Handler(Looper.myLooper()).postDelayed(() -> Constant.showOpenAd(), 1000);
             }
 
         }
+    }
 
-
-        binding.btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (binding.cropLoader.getVisibility() == View.GONE)
-                    onBackPressed();
-            }
+    private void initClick() {
+        binding.btnCancel.setOnClickListener(v -> {
+            if (binding.cropLoader.getVisibility() == View.GONE)
+                onBackPressed();
         });
 
-        binding.btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (binding.cropLoader.getVisibility() == View.GONE) {
-                    binding.cropLoader.setVisibility(View.VISIBLE);
+        binding.btnNext.setOnClickListener(v -> {
+            if (binding.cropLoader.getVisibility() == View.GONE) {
+                binding.cropLoader.setVisibility(View.VISIBLE);
 
-                    binding.cropImageView.crop(new CropListener() {
-                        @Override
-                        public void onFinish(Bitmap bitmap) {
+                binding.cropImageView.crop(bitmap -> {
 
-                            if (bitmap != null) {
-                                if (type.equalsIgnoreCase(Constant.document)) {
-                                    Constant.cropBitmap1 = bitmap;
-                                    binding.cropLoader.setVisibility(View.GONE);
-                                    startActivity(new Intent(EditScanActivity.this, EditorActivity.class).putExtra("type", type));
-                                    finish();
-                                } else  if (type.equalsIgnoreCase(Constant.ocr)) {
-                                    Constant.cropBitmap1 = bitmap;
-                                    binding.cropLoader.setVisibility(View.GONE);
-                                    startActivity(new Intent(EditScanActivity.this, OcrActivity.class));
-                                    finish();
-                                }
-                                else if (type.equalsIgnoreCase(Constant.business) || type.equalsIgnoreCase(Constant.idCard)) {
-                                    binding.cropLoader.setVisibility(View.GONE);
-
-                                    if (imageCount == 1){
-                                        Constant.cropBitmap1 = bitmap;
-                                        setResult(RESULT_OK);
-                                        finish();
-                                    } else {
-                                        Constant.cropBitmap2 = bitmap;
-                                        startActivity(new Intent(EditScanActivity.this, EditorTwoActivity.class).putExtra("type", type));
-                                        finish();
-                                    }
-
-                                }
-                            }
+                    if (bitmap != null) {
+                        if (type.equalsIgnoreCase(Constant.document)) {
+                            Constant.cropBitmap1 = bitmap;
+                            binding.cropLoader.setVisibility(View.GONE);
+                            startActivity(new Intent(EditScanActivity.this, EditorActivity.class).putExtra("type", type));
+                            finish();
+                        } else  if (type.equalsIgnoreCase(Constant.ocr)) {
+                            Constant.cropBitmap1 = bitmap;
+                            binding.cropLoader.setVisibility(View.GONE);
+                            startActivity(new Intent(EditScanActivity.this, OcrActivity.class));
+                            finish();
                         }
-                    }, true);
-                }
+                        else if (type.equalsIgnoreCase(Constant.business) || type.equalsIgnoreCase(Constant.idCard)) {
+                            binding.cropLoader.setVisibility(View.GONE);
+
+                            if (imageCount == 1){
+                                Constant.cropBitmap1 = bitmap;
+                                setResult(RESULT_OK);
+                                finish();
+                            } else {
+                                Constant.cropBitmap2 = bitmap;
+                                startActivity(new Intent(EditScanActivity.this, EditorTwoActivity.class).putExtra("type", type));
+                                finish();
+                            }
+
+                        }
+                    }
+                }, true);
             }
         });
-
     }
 }

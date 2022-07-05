@@ -1,11 +1,10 @@
-package com.pdfscanner.pdf.scanpdf.listener;
+package com.pdfscanner.pdf.scanpdf.model.home;
 
-public class HomeRenameUpdate {
+public class RenameUpdate {
     String oldFile;
     String renameFile;
 
-
-    public HomeRenameUpdate(String oldFile, String renameFile) {
+    public RenameUpdate(String oldFile, String renameFile) {
         this.oldFile = oldFile;
         this.renameFile = renameFile;
     }

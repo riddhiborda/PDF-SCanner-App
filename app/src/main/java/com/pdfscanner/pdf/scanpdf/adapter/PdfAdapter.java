@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.pdfscanner.pdf.scanpdf.R;
-import com.pdfscanner.pdf.scanpdf.model.PdfModel;
+import com.pdfscanner.pdf.scanpdf.model.PDFModel;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -27,14 +27,14 @@ public class PdfAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static ClickListener listener;
     private static LongClickListener longClickListener;
     boolean isGrid = false;
-    ArrayList<PdfModel> pdfList = new ArrayList<>();
+    ArrayList<PDFModel> pdfList = new ArrayList<>();
 
     public static final int TYPE_AD = 2;
     public static final int TYPE_ITEM = 0;
     public static final int TYPE_ITEM_GRID = 1;
 
 
-    public PdfAdapter(Context context, ArrayList<PdfModel> pdfList) {
+    public PdfAdapter(Context context, ArrayList<PDFModel> pdfList) {
         this.context = context;
         this.pdfList.addAll(pdfList);
 
@@ -42,7 +42,7 @@ public class PdfAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.documentSelect = documentSelect;*/
     }
 
-    public void setFilterlist(ArrayList<PdfModel> pdfList) {
+    public void setFilterlist(ArrayList<PDFModel> pdfList) {
         this.pdfList.clear();
         this.pdfList.addAll(pdfList);
         notifyDataSetChanged();
@@ -98,7 +98,7 @@ public class PdfAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     try {
 
                         ViewHolder viewholder = (ViewHolder) holder;
-                        PdfModel model = pdfList.get(position);
+                        PDFModel model = pdfList.get(position);
 
 //                        viewholder.txtFolderName.setText(model.getName());
 

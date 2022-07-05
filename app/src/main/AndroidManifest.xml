@@ -5,52 +5,62 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
 
-
     <application
-        android:name="com.pdfscanner.pdf.scanpdf.AppClass"
+        android:name=".BaseClass"
         android:allowBackup="false"
         android:icon="@mipmap/ic_app_icon"
         android:label="@string/app_name_2"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_round_app_icon"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.PDFScanner"
+        android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup,android:label">
 
-        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.ImageToPdfActivity"/>
-        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.Privacy_Activity"/>
-        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.SubscriptionActivity" />
+        <activity android:name=".ui.ImageToPdfActivity" />
+
+        <activity android:name=".ui.PrivacyActivity" />
+
         <activity
-            android:name="com.pdfscanner.pdf.scanpdf.ui.DocumentActivity"
+            android:name=".ui.DocumentActivity"
             android:theme="@style/gray_theme" />
-        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.OcrActivity" />
-        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.ImageActivity" />
+
+        <activity android:name=".ui.OcrActivity" />
+
+        <activity android:name=".ui.ImageActivity" />
+
         <activity
-            android:name="com.pdfscanner.pdf.scanpdf.ui.QrScanActivity"
+            android:name=".ui.QrScanActivity"
             android:theme="@style/Theme.black" />
-        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.EditorTwoActivity" />
-        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.EditDocumentActivity" />
-        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.ImageShowActivity" />
-        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.PreviewActivity" />
-        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.SignatureActivity" />
-        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.EditorActivity" />
-        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.EditScanActivity" />
+
+        <activity android:name=".ui.EditorTwoActivity" />
+
+        <activity android:name=".ui.EditDocumentActivity" />
+
+        <activity android:name=".ui.ImageShowActivity" />
+
+        <activity android:name=".ui.PreviewActivity" />
+
+        <activity android:name=".ui.SignatureActivity" />
+
+        <activity android:name=".ui.EditorActivity" />
+
+        <activity android:name=".ui.EditScanActivity" />
+
         <activity
-            android:name="com.pdfscanner.pdf.scanpdf.ui.SettingActivity"
+            android:name=".ui.SettingActivity"
             android:theme="@style/gray_theme" />
+
         <activity
-            android:name="com.pdfscanner.pdf.scanpdf.ui.SplashActivity"
+            android:name=".ui.SplashActivity"
             android:theme="@style/Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,9 +68,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.pdfscanner.pdf.scanpdf.ui.PermissionActivity" />
+
+        <activity android:name=".ui.PermissionActivity" />
+
         <activity
-            android:name="com.pdfscanner.pdf.scanpdf.MainActivity"
+            android:name=".MainActivity"
             android:theme="@style/gray_theme" />
 
         <provider
@@ -70,11 +82,11 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
+                android:resource="@xml/paths_provider" />
         </provider>
 
         <service
-            android:name="com.pdfscanner.pdf.scanpdf.service.ImageDataService"
+            android:name=".service.ImageDataService"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">

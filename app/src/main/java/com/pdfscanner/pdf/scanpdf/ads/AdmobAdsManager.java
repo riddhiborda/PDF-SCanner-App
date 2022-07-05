@@ -1,4 +1,4 @@
-package com.pdfscanner.pdf.scanpdf.ad;
+package com.pdfscanner.pdf.scanpdf.ads;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -33,32 +33,28 @@ import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
 import com.pdfscanner.pdf.scanpdf.R;
 import com.pdfscanner.pdf.scanpdf.Util.Constant;
-import com.pdfscanner.pdf.scanpdf.Util.PreferencesManager;
 
-import java.util.Random;
+public class AdmobAdsManager {
 
-public class AdmobAdManager {
-
-    private static final String TAG = "AdmobAdManager";
-    private static AdmobAdManager singleton;
+    private final String TAG = this.getClass().getSimpleName();
+    private static AdmobAdsManager singleton;
     public static InterstitialAd interstitialAd;
-    public boolean isAdLoad = false;
-    public boolean isAdLoadProcessing = false;
-    public boolean isAdLoadFailed = false;
+    public boolean isAdLoad;
+    public boolean isAdLoadProcessing;
+    public boolean isAdLoadFailed;
 
     private ProgressDialog progressDialog;
 
-    public AdmobAdManager(Context context) {
+    public AdmobAdsManager(Context context) {
         isAdLoad = false;
         isAdLoadProcessing = false;
         isAdLoadFailed = false;
         setUpProgress(context);
     }
 
-
-    public static AdmobAdManager getInstance(Context context) {
+    public static AdmobAdsManager getInstance(Context context) {
         if (singleton == null) {
-            singleton = new AdmobAdManager(context);
+            singleton = new AdmobAdsManager(context);
         } else {
             singleton.setUpProgress(context);
         }
@@ -79,7 +75,6 @@ public class AdmobAdManager {
                 progressDialog.show();
             }
         });
-
     }
 
     public void dismissProgress(Activity activity) {
@@ -90,13 +85,13 @@ public class AdmobAdManager {
         });
     }
 
-    public boolean getShowAds(Context context) {
+    public boolean getShowAds() {
         return true;
     }
 
     public void loadInterstitialAd(Context context, String interstitialAdID) {
 
-        if (getShowAds(context))
+        if (getShowAds())
             if (interstitialAd == null && !isAdLoadProcessing) {
                 isAdLoadProcessing = true;
                 AdRequest adRequest = new AdRequest.Builder().build();
@@ -107,7 +102,6 @@ public class AdmobAdManager {
                         isAdLoad = true;
                         isAdLoadFailed = false;
                         isAdLoadProcessing = false;
-
                     }
 
                     @Override
@@ -128,74 +122,66 @@ public class AdmobAdManager {
         return interstitialAd;
     }
 
-
     public void loadInterstitialAd(Activity context, String interstitialAdID, int number, OnAdClosedListener onAdClosedListener) {
-        if (getShowAds(context)) {
-            /*Random random = new Random();
-            int r = random.nextInt(number);
-            if (number == 1 || r == 1) {*/
-                if (interstitialAd != null) {
-                    if (isAdLoad && !isAdLoadFailed && !isAdLoadProcessing) {
+        if (getShowAds()) {
+            if (interstitialAd != null) {
+                if (isAdLoad && !isAdLoadFailed && !isAdLoadProcessing) {
+                    Constant.SHOW_OPEN_ADS = false;
+                    interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                        @Override
+                        public void onAdFailedToShowFullScreenContent(com.google.android.gms.ads.AdError adError) {
+                            super.onAdFailedToShowFullScreenContent(adError);
+                            interstitialAd = null;
+                            isAdLoad = false;
+                            isAdLoadProcessing = false;
+                            isAdLoadFailed = false;
+                            Constant.showOpenAd();
+                            Constant.SHOW_OPEN_ADS = true;
+                            onAdClosedListener.onAdClosed(false);
+                        }
 
-                        Constant.SHOW_OPEN_ADS = false;
-                        interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                            @Override
-                            public void onAdFailedToShowFullScreenContent(com.google.android.gms.ads.AdError adError) {
-                                super.onAdFailedToShowFullScreenContent(adError);
-                                interstitialAd = null;
-                                isAdLoad = false;
-                                isAdLoadProcessing = false;
-                                isAdLoadFailed = false;
-                                Constant.showOpenAd();
-                                Constant.SHOW_OPEN_ADS = true;
-                                onAdClosedListener.onAdClosed(false);
-                            }
+                        @Override
+                        public void onAdShowedFullScreenContent() {
+                            super.onAdShowedFullScreenContent();
+                        }
 
-                            @Override
-                            public void onAdShowedFullScreenContent() {
-                                super.onAdShowedFullScreenContent();
-                            }
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            super.onAdDismissedFullScreenContent();
+                            isAdLoad = false;
+                            isAdLoadProcessing = false;
+                            isAdLoadFailed = false;
+                            interstitialAd = null;
+                            Constant.SHOW_OPEN_ADS = true;
+                            Constant.showOpenAd();
+                            loadInterstitialAd(context, interstitialAdID);
+                            onAdClosedListener.onAdClosed(true);
+                        }
+                    });
+                    Constant.hideOpenAd();
+                    interstitialAd.show(context);
 
-                            @Override
-                            public void onAdDismissedFullScreenContent() {
-                                super.onAdDismissedFullScreenContent();
-                                isAdLoad = false;
-                                isAdLoadProcessing = false;
-                                isAdLoadFailed = false;
-                                interstitialAd = null;
-                                Constant.SHOW_OPEN_ADS = true;
-                                Constant.showOpenAd();
-                                loadInterstitialAd(context, interstitialAdID);
-                                onAdClosedListener.onAdClosed(true);
-                            }
-                        });
-                        Constant.hideOpenAd();
-                        interstitialAd.show(context);
-
-                    } else {
-                        Log.e("Ads", "Ads still loading!");
-                        onAdClosedListener.onAdClosed(false);
-                    }
                 } else {
-                    if (!TextUtils.isEmpty(interstitialAdID)) {
-                        loadInterstitialAd(context, interstitialAdID);
-                    }
+                    Log.e("Ads", "Ads still loading!");
                     onAdClosedListener.onAdClosed(false);
                 }
-            /*} else {
+            } else {
+                if (!TextUtils.isEmpty(interstitialAdID)) {
+                    loadInterstitialAd(context, interstitialAdID);
+                }
                 onAdClosedListener.onAdClosed(false);
-            }*/
+            }
         } else {
             onAdClosedListener.onAdClosed(false);
         }
     }
 
     public interface OnAdClosedListener {
-        public void onAdClosed(Boolean isShowADs);
+        void onAdClosed(Boolean isShowADs);
     }
 
-    public void LoadBanner(Context context, RelativeLayout adContainerView, String bannerAdID, final AdEventListener adEventListener) {
-        if (getShowAds(context)) {
+    public void LoadBanner(Context context, RelativeLayout adContainerView, String bannerAdID, final AdsEventListener adEventListener) {
+        if (getShowAds()) {
             try {
                 if (isNetworkAvailable(context)) {
                     AdView adView = new AdView(context);
@@ -258,8 +244,8 @@ public class AdmobAdManager {
     }
 
 
-    public void LoadAdaptiveBanner(Context context, RelativeLayout adContainerView, String bannerAdID, final AdEventListener adEventListener) {
-        if (getShowAds(context)) {
+    public void LoadAdaptiveBanner(Context context, RelativeLayout adContainerView, String bannerAdID, final AdsEventListener adsEventListener) {
+        if (getShowAds()) {
             try {
 
                 if (isNetworkAvailable(context)) {
@@ -280,8 +266,8 @@ public class AdmobAdManager {
                         @Override
                         public void onAdLoaded() {
                             super.onAdLoaded();
-                            if (adEventListener != null) {
-                                adEventListener.onAdLoaded(null);
+                            if (adsEventListener != null) {
+                                adsEventListener.onAdLoaded(null);
                             }
                         }
 
@@ -289,16 +275,16 @@ public class AdmobAdManager {
                         public void onAdClosed() {
                             super.onAdClosed();
 
-                            if (adEventListener != null) {
-                                adEventListener.onAdClosed();
+                            if (adsEventListener != null) {
+                                adsEventListener.onAdClosed();
                             }
                         }
 
                         @Override
                         public void onAdFailedToLoad(LoadAdError loadAdError) {
                             super.onAdFailedToLoad(loadAdError);
-                            if (adEventListener != null) {
-                                adEventListener.onLoadError(loadAdError.getMessage());
+                            if (adsEventListener != null) {
+                                adsEventListener.onLoadError(loadAdError.getMessage());
                             }
                             Log.e(TAG, "onAdFailedAdaptiveBanner: " + loadAdError.toString());
                         }
@@ -312,8 +298,8 @@ public class AdmobAdManager {
                 Log.e(TAG, "LoadAdaptiveBanner: " + e.toString());
             }
         } else {
-            if (adEventListener != null) {
-                adEventListener.onLoadError("");
+            if (adsEventListener != null) {
+                adsEventListener.onLoadError("");
             }
         }
     }
@@ -339,13 +325,13 @@ public class AdmobAdManager {
         return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(context, adWidth);
     }
 
-    public void LoadNativeAd(final Context context, String nativeAdID, final AdEventListener adEventListener) {
-        if (getShowAds(context)) {
+    public void LoadNativeAd(final Context context, String nativeAdID, final AdsEventListener adsEventListener) {
+        if (getShowAds()) {
             AdLoader.Builder builder = new AdLoader.Builder(context, nativeAdID);
 
             builder.forNativeAd(unifiedNativeAd -> {
-                if (adEventListener != null) {
-                    adEventListener.onAdLoaded(unifiedNativeAd);
+                if (adsEventListener != null) {
+                    adsEventListener.onAdLoaded(unifiedNativeAd);
                 }
 
             }).withAdListener(new AdListener() {
@@ -357,8 +343,8 @@ public class AdmobAdManager {
                 @Override
                 public void onAdFailedToLoad(LoadAdError loadAdError) {
                     super.onAdFailedToLoad(loadAdError);
-                    if (adEventListener != null) {
-                        adEventListener.onLoadError(loadAdError.getMessage());
+                    if (adsEventListener != null) {
+                        adsEventListener.onLoadError(loadAdError.getMessage());
                     }
                     Log.e(TAG, "onAdFailedToLoadNative:" + loadAdError.getCode());
                 }
@@ -376,14 +362,14 @@ public class AdmobAdManager {
             AdLoader adLoader = builder.build();
             adLoader.loadAd(new AdRequest.Builder().build());
         } else {
-            if (adEventListener != null) {
-                adEventListener.onLoadError("");
+            if (adsEventListener != null) {
+                adsEventListener.onLoadError("");
             }
         }
     }
 
     public void populateUnifiedNativeAdView(Context context, FrameLayout frameLayout, NativeAd nativeAd, boolean isShowMedia, boolean isGrid) {
-        if (getShowAds(context)) {
+        if (getShowAds()) {
             if (isNetworkAvailable(context)) {
                 LayoutInflater inflater = LayoutInflater.from(context);
                 // Inflate the Ad view.  The layout referenced should be the one you created in the last step.
@@ -404,22 +390,13 @@ public class AdmobAdManager {
                 try {
                     com.google.android.gms.ads.nativead.MediaView mediaView = adView.findViewById(R.id.mediaView);
                     mediaView.setMediaContent(nativeAd.getMediaContent());
-//            mediaView.setImageScaleType(ImageView.ScaleType.CENTER_CROP);
                     adView.setMediaView(mediaView);
-//
-//                if (color == 1) {
-//                    mediaView.setVisibility(View.VISIBLE);
-//                } else {
-//                    mediaView.setVisibility(View.GONE);
-//                }
 
                     adView.setHeadlineView(adView.findViewById(R.id.adTitle));
                     adView.setBodyView(adView.findViewById(R.id.adDescription));
                     adView.setIconView(adView.findViewById(R.id.adIcon));
 
                     ((TextView) adView.getHeadlineView()).setText(nativeAd.getHeadline());
-//                adView.getMediaView().setMediaContent(nativeAd.getMediaContent());
-
 
                     if (nativeAd.getBody() == null) {
                         adView.getBodyView().setVisibility(View.INVISIBLE);
@@ -427,7 +404,6 @@ public class AdmobAdManager {
                         adView.getBodyView().setVisibility(View.VISIBLE);
                         ((TextView) adView.getBodyView()).setText(nativeAd.getBody());
                     }
-
 
                     if (nativeAd.getIcon() == null) {
                         adView.getIconView().setVisibility(View.GONE);
@@ -454,7 +430,6 @@ public class AdmobAdManager {
                         });
                     }
 
-
                     adView.setNativeAd(nativeAd);
 
                 } catch (Exception e) {
@@ -466,5 +441,4 @@ public class AdmobAdManager {
             frameLayout.setVisibility(View.GONE);
         }
     }
-
 }

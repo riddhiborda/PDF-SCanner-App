@@ -19,11 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.pdfscanner.pdf.scanpdf.R;
 import com.pdfscanner.pdf.scanpdf.adapter.imageToPdf.PhotosAdapter;
-import com.pdfscanner.pdf.scanpdf.adapter.imageToPdf.SelectPhotoAdapter;
-import com.pdfscanner.pdf.scanpdf.adapter.imageToPdf.Spinner_Adapter;
+import com.pdfscanner.pdf.scanpdf.adapter.imageToPdf.PhotoSelectAdapter;
+import com.pdfscanner.pdf.scanpdf.adapter.imageToPdf.SpinnerAdapter;
 import com.pdfscanner.pdf.scanpdf.databinding.ActivityImageBinding;
 import com.pdfscanner.pdf.scanpdf.model.PhotoData;
-import com.pdfscanner.pdf.scanpdf.oncliclk.OnSelectImage;
+import com.pdfscanner.pdf.scanpdf.listener.OnSelectImage;
 import com.pdfscanner.pdf.scanpdf.service.ImageDataService;
 
 import java.util.ArrayList;
@@ -33,15 +33,12 @@ import io.reactivex.Observable;
 public class ImageActivity extends AppCompatActivity implements OnSelectImage {
 
     ActivityImageBinding binding;
-
     public ArrayList<String> folderList = new ArrayList<>();
     ArrayList<PhotoData> photoList = new ArrayList<>();
     public static ArrayList<PhotoData> selectPhotoList = new ArrayList<>();
     ArrayList<PhotoData> folderPhotoList = new ArrayList<>();
-
     PhotosAdapter adapter;
-    SelectPhotoAdapter selecAdapter;
-
+    PhotoSelectAdapter selecAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,10 +48,8 @@ public class ImageActivity extends AppCompatActivity implements OnSelectImage {
         }
         changeStatusBarColor(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_image);
-//        setContentView(R.layout.activity_image);
-        intView();
-        loadbanner();
 
+        intView();
     }
 
     @Override
@@ -73,10 +68,6 @@ public class ImageActivity extends AppCompatActivity implements OnSelectImage {
             binding.loutImageSelect.setVisibility(View.GONE);
             binding.btnNext.setVisibility(View.GONE);
         }
-    }
-
-    private void loadbanner() {
-
     }
 
     public void getData() {
@@ -158,12 +149,12 @@ public class ImageActivity extends AppCompatActivity implements OnSelectImage {
 
     public void setSelectAdapter() {
 
-        selecAdapter = new SelectPhotoAdapter(ImageActivity.this, selectPhotoList);
+        selecAdapter = new PhotoSelectAdapter(ImageActivity.this, selectPhotoList);
         binding.selectRecyclerView.setLayoutManager(new LinearLayoutManager(ImageActivity.this, LinearLayoutManager.HORIZONTAL, false));
 //        binding.selectRecyclerView.hasFixedSize();
         binding.selectRecyclerView.setAdapter(selecAdapter);
 
-        selecAdapter.setOnItemClickListener(new SelectPhotoAdapter.ClickListener() {
+        selecAdapter.setOnItemClickListener(new PhotoSelectAdapter.ClickListener() {
             @Override
             public void onItemClick(int position, View v) {
                 selectPhotoList.remove(position);
@@ -187,7 +178,7 @@ public class ImageActivity extends AppCompatActivity implements OnSelectImage {
     public void initSpinner() {
         if (photoList.size() > 0) {
             binding.navigationSpinner.setVisibility(View.VISIBLE);
-            Spinner_Adapter spinner_adapter = new Spinner_Adapter(ImageActivity.this, folderList);
+            SpinnerAdapter spinner_adapter = new SpinnerAdapter(ImageActivity.this, folderList);
             spinner_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             binding.navigationSpinner.setAdapter(spinner_adapter);
             initListener();
@@ -248,21 +239,17 @@ public class ImageActivity extends AppCompatActivity implements OnSelectImage {
             }
         }
 
+        runOnUiThread(() -> {
+            binding.progressBar.setVisibility(View.GONE);
+            folderList = new ArrayList<>();
+            photoList = new ArrayList<>();
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                binding.progressBar.setVisibility(View.GONE);
-                folderList = new ArrayList<>();
-                photoList = new ArrayList<>();
+            folderList.addAll(ImageDataService.folderList);
+            photoList.addAll(ImageDataService.photoDataArrayList);
+            folderPhotoList.addAll(ImageDataService.photoDataArrayList);
 
-                folderList.addAll(ImageDataService.folderList);
-                photoList.addAll(ImageDataService.photoDataArrayList);
-                folderPhotoList.addAll(ImageDataService.photoDataArrayList);
-
-                initAdapter(photoList);
-                initSpinner();
-            }
+            initAdapter(photoList);
+            initSpinner();
         });
 
     }

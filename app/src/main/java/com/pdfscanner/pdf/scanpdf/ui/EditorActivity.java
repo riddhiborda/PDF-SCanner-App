@@ -18,10 +18,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.pdfscanner.pdf.scanpdf.MainActivity;
 import com.pdfscanner.pdf.scanpdf.R;
 import com.pdfscanner.pdf.scanpdf.Util.Constant;
-import com.pdfscanner.pdf.scanpdf.ad.AdmobAdManager;
+import com.pdfscanner.pdf.scanpdf.ads.AdmobAdsManager;
 import com.pdfscanner.pdf.scanpdf.adapter.FilterAdapter;
 import com.pdfscanner.pdf.scanpdf.databinding.ActivityEditorBinding;
 import com.pdfscanner.pdf.scanpdf.stickerview.StickerView;
@@ -48,7 +47,7 @@ public class EditorActivity extends AppCompatActivity {
     int width, height;
     int pos = -1;
     String type;
-    AdmobAdManager admobAdManager;
+    AdmobAdsManager admobAdsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +57,7 @@ public class EditorActivity extends AppCompatActivity {
         }
         changeStatusBarColor(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_editor);
-        admobAdManager = AdmobAdManager.getInstance(this);
+        admobAdsManager = AdmobAdsManager.getInstance(this);
         intView();
     }
 

@@ -6,7 +6,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,20 +30,19 @@ import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.pdfscanner.pdf.scanpdf.MainActivity;
 import com.pdfscanner.pdf.scanpdf.R;
 import com.pdfscanner.pdf.scanpdf.Util.Constant;
 import com.pdfscanner.pdf.scanpdf.Util.PreferencesManager;
 import com.pdfscanner.pdf.scanpdf.Util.RxBus;
 import com.pdfscanner.pdf.scanpdf.Util.Utils;
-import com.pdfscanner.pdf.scanpdf.ad.AdEventListener;
-import com.pdfscanner.pdf.scanpdf.ad.AdmobAdManager;
+import com.pdfscanner.pdf.scanpdf.ads.AdsEventListener;
+import com.pdfscanner.pdf.scanpdf.ads.AdmobAdsManager;
 import com.pdfscanner.pdf.scanpdf.adapter.DocumentAdapter;
 import com.pdfscanner.pdf.scanpdf.databinding.ActivityDocumentBinding;
-import com.pdfscanner.pdf.scanpdf.listener.HomeDeleteUpdate;
-import com.pdfscanner.pdf.scanpdf.listener.HomeRenameUpdate;
-import com.pdfscanner.pdf.scanpdf.listener.HomeUpdate;
-import com.pdfscanner.pdf.scanpdf.model.PdfModel;
+import com.pdfscanner.pdf.scanpdf.model.home.UpdateDelete;
+import com.pdfscanner.pdf.scanpdf.model.home.RenameUpdate;
+import com.pdfscanner.pdf.scanpdf.model.home.Update;
+import com.pdfscanner.pdf.scanpdf.model.PDFModel;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -57,11 +55,11 @@ import rx.schedulers.Schedulers;
 
 public class DocumentActivity extends AppCompatActivity {
     ActivityDocumentBinding binding;
-    ArrayList<PdfModel> docList = new ArrayList<>();
+    ArrayList<PDFModel> docList = new ArrayList<>();
     DocumentAdapter adapter;
     int pos = -1;
     String[] types = new String[]{".pdf"};
-    AdmobAdManager admobAdManager;
+    AdmobAdsManager admobAdsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +69,7 @@ public class DocumentActivity extends AppCompatActivity {
         }
         changeStatusBarColor(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_document);
-        admobAdManager = AdmobAdManager.getInstance(this);
+        admobAdsManager = AdmobAdsManager.getInstance(this);
         recentUpdate();
         intview();
     }
@@ -90,7 +88,7 @@ public class DocumentActivity extends AppCompatActivity {
     private void loadbanner() {
         if (docList != null && docList.size() != 0) {
             if (!PreferencesManager.getString(DocumentActivity.this, Constant.BANNER_ID).isEmpty()) {
-                admobAdManager.LoadAdaptiveBanner(this, binding.loutBanner, PreferencesManager.getString(DocumentActivity.this, Constant.BANNER_ID), new AdEventListener() {
+                admobAdsManager.LoadAdaptiveBanner(this, binding.loutBanner, PreferencesManager.getString(DocumentActivity.this, Constant.BANNER_ID), new AdsEventListener() {
                     @Override
                     public void onAdLoaded(Object object) {
                         binding.loutBanner.setVisibility(View.VISIBLE);
@@ -177,27 +175,19 @@ public class DocumentActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK && requestCode == 101) {
-
-            RxBus.getInstance().post(new HomeDeleteUpdate(docList.get(pos).getFilePath()));
+            RxBus.getInstance().post(new UpdateDelete(docList.get(pos).getFilePath()));
             docList.remove(pos);
 
             if (adapter != null) {
                 adapter.notifyItemRemoved(pos);
             }
-
             if (docList != null && docList.size() != 0) {
-
                 binding.loutNoData.setVisibility(View.GONE);
                 binding.recyclerView.setVisibility(View.VISIBLE);
-
             } else {
-
                 binding.recyclerView.setVisibility(View.GONE);
                 binding.loutNoData.setVisibility(View.VISIBLE);
-
             }
-
-
         }
     }
 
@@ -221,13 +211,12 @@ public class DocumentActivity extends AppCompatActivity {
                         loadbanner();
                     });
                 });
-
     }
 
 
-    public ArrayList<PdfModel> getList() {
+    public ArrayList<PDFModel> getList() {
 
-        ArrayList<PdfModel> list = new ArrayList<>();
+        ArrayList<PDFModel> list = new ArrayList<>();
 
         Cursor mCursor = null;
 
@@ -273,7 +262,7 @@ public class DocumentActivity extends AppCompatActivity {
 
                                 String title = mCursor.getString(mCursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE));
 
-                                PdfModel model = new PdfModel();
+                                PDFModel model = new PDFModel();
                                 model.setFilePath(path);
                                 model.setFileName(title);
                                 model.setSize(size);
@@ -326,7 +315,7 @@ public class DocumentActivity extends AppCompatActivity {
                 Toast.makeText(DocumentActivity.this, "Delete file successfully", Toast.LENGTH_SHORT).show();
 
                 if (adapter != null) {
-                    RxBus.getInstance().post(new HomeDeleteUpdate(docList.get(pos).getFilePath()));
+                    RxBus.getInstance().post(new UpdateDelete(docList.get(pos).getFilePath()));
                     docList.remove(pos);
                     adapter.notifyItemRemoved(pos);
                 }
@@ -360,10 +349,10 @@ public class DocumentActivity extends AppCompatActivity {
 
     public void recentUpdate() {
 
-        Subscription subscription = RxBus.getInstance().toObservable(HomeUpdate.class).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).distinctUntilChanged().subscribe(new Action1<HomeUpdate>() {
+        Subscription subscription = RxBus.getInstance().toObservable(Update.class).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).distinctUntilChanged().subscribe(new Action1<Update>() {
                     @Override
-                    public void call(HomeUpdate event) {
+                    public void call(Update event) {
                         if (event.getFilePath() != null && !event.equals("")) {
 
                             File file = new File(event.getFilePath());
@@ -371,7 +360,7 @@ public class DocumentActivity extends AppCompatActivity {
 
                                 if (contains(types, file.getPath())) {
 
-                                    PdfModel model = new PdfModel();
+                                    PDFModel model = new PDFModel();
                                     model.setFilePath(file.getPath());
                                     model.setFileName(file.getName());
                                     model.setSize(file.length());
@@ -428,7 +417,7 @@ public class DocumentActivity extends AppCompatActivity {
         Dialog dialog = new Dialog(this, R.style.WideDialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
-        dialog.setContentView(R.layout.dialog_rename);
+        dialog.setContentView(R.layout.rename_dialog);
         dialog.setCanceledOnTouchOutside(true);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.getWindow().setGravity(Gravity.CENTER);
@@ -515,7 +504,7 @@ public class DocumentActivity extends AppCompatActivity {
                         // Log.i("ExternalStorage", "Scanned " + path + ":" + uri);
                     }
                 });
-                RxBus.getInstance().post(new HomeRenameUpdate(oldFile, file2.getPath()));
+                RxBus.getInstance().post(new RenameUpdate(oldFile, file2.getPath()));
 
                 docList.get(pos).setFilePath(file2.getPath());
                 docList.get(pos).setFileName(file2.getName());
@@ -532,7 +521,7 @@ public class DocumentActivity extends AppCompatActivity {
         Dialog validationDialog = new Dialog(this, R.style.WideDialog);
         validationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         validationDialog.setCancelable(true);
-        validationDialog.setContentView(R.layout.dialog_rename_same_name_validation);
+        validationDialog.setContentView(R.layout.same_name_validation_dialog);
         validationDialog.setCanceledOnTouchOutside(true);
         validationDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         validationDialog.getWindow().setGravity(Gravity.CENTER);

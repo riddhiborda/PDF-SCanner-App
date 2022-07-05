@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.pdfscanner.pdf.scanpdf.R;
 import com.pdfscanner.pdf.scanpdf.Util.Constant;
-import com.pdfscanner.pdf.scanpdf.ad.AdmobAdManager;
+import com.pdfscanner.pdf.scanpdf.ads.AdmobAdsManager;
 import com.pdfscanner.pdf.scanpdf.adapter.FilterAdapter;
 import com.pdfscanner.pdf.scanpdf.databinding.ActivityEditorTwoBinding;
 import com.pdfscanner.pdf.scanpdf.stickerview.StickerView;
@@ -51,7 +51,7 @@ public class EditorTwoActivity extends AppCompatActivity {
     String type;
 
     int select = 1;
-    AdmobAdManager admobAdManager;
+    AdmobAdsManager admobAdsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +61,7 @@ public class EditorTwoActivity extends AppCompatActivity {
         }
         changeStatusBarColor(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_editor_two);
-        admobAdManager = AdmobAdManager.getInstance(this);
+        admobAdsManager = AdmobAdsManager.getInstance(this);
         intView();
     }
 

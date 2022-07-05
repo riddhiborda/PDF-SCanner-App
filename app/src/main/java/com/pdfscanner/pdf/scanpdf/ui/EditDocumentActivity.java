@@ -34,15 +34,14 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.pdfscanner.pdf.scanpdf.MainActivity;
 import com.pdfscanner.pdf.scanpdf.R;
 import com.pdfscanner.pdf.scanpdf.Util.Constant;
 import com.pdfscanner.pdf.scanpdf.Util.PreferencesManager;
 import com.pdfscanner.pdf.scanpdf.Util.RxBus;
 import com.pdfscanner.pdf.scanpdf.Util.Utils;
-import com.pdfscanner.pdf.scanpdf.ad.AdmobAdManager;
+import com.pdfscanner.pdf.scanpdf.ads.AdmobAdsManager;
 import com.pdfscanner.pdf.scanpdf.databinding.ActivityEditDocumentBinding;
-import com.pdfscanner.pdf.scanpdf.listener.HomeUpdate;
+import com.pdfscanner.pdf.scanpdf.model.home.Update;
 import com.pdfscanner.pdf.scanpdf.pdf.ImageToPDFOptions;
 import com.pdfscanner.pdf.scanpdf.stickerview.StickerView;
 
@@ -68,7 +67,7 @@ public class EditDocumentActivity extends AppCompatActivity {
     private StickerView mCurrentView;
     String filePath;
 
-    AdmobAdManager admobAdManager;
+    AdmobAdsManager admobAdsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +77,7 @@ public class EditDocumentActivity extends AppCompatActivity {
         }
         changeStatusBarColor(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_document);
-        admobAdManager = AdmobAdManager.getInstance(this);
+        admobAdsManager = AdmobAdsManager.getInstance(this);
         intView();
     }
 
@@ -241,7 +240,7 @@ public class EditDocumentActivity extends AppCompatActivity {
         Dialog dialog = new Dialog(this, R.style.WideDialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
-        dialog.setContentView(R.layout.dilaog_edit_save);
+        dialog.setContentView(R.layout.edit_save_dialog);
         dialog.setCanceledOnTouchOutside(true);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.getWindow().setGravity(Gravity.CENTER);
@@ -587,9 +586,9 @@ public class EditDocumentActivity extends AppCompatActivity {
                     });
 
                     if (isAlredyExit) {
-                        RxBus.getInstance().post(new HomeUpdate());
+                        RxBus.getInstance().post(new Update());
                     } else {
-                        RxBus.getInstance().post(new HomeUpdate(mPath));
+                        RxBus.getInstance().post(new Update(mPath));
                     }
 
                     int counter = PreferencesManager.getInteger(EditDocumentActivity.this,Constant.EDIT_DOCUMENT);
@@ -597,7 +596,7 @@ public class EditDocumentActivity extends AppCompatActivity {
 
                     if (!PreferencesManager.getString(EditDocumentActivity.this,Constant.INTERSTITIAL_ID).isEmpty()){
                         if (counter == PreferencesManager.getInteger(EditDocumentActivity.this,Constant.ADS_COUNTER)){
-                            admobAdManager.loadInterstitialAd(EditDocumentActivity.this, PreferencesManager.getString(EditDocumentActivity.this,Constant.INTERSTITIAL_ID), 1, new AdmobAdManager.OnAdClosedListener() {
+                            admobAdsManager.loadInterstitialAd(EditDocumentActivity.this, PreferencesManager.getString(EditDocumentActivity.this,Constant.INTERSTITIAL_ID), 1, new AdmobAdsManager.OnAdClosedListener() {
                                 @Override
                                 public void onAdClosed(Boolean isShowADs) {
                                     Toast.makeText(EditDocumentActivity.this, "Document save successfully", Toast.LENGTH_SHORT).show();

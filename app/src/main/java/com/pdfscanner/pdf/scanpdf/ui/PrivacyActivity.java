@@ -17,13 +17,11 @@ import androidx.appcompat.widget.Toolbar;
 import com.pdfscanner.pdf.scanpdf.R;
 
 
-public class Privacy_Activity extends AppCompatActivity {
+public class PrivacyActivity extends AppCompatActivity {
 
     private WebView privacy_web;
     private ProgressBar privacy_progress;
-    Toolbar toolbar;
     private ImageView iv_close;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +31,7 @@ public class Privacy_Activity extends AppCompatActivity {
         }
         changeStatusBarColor(this);
         setContentView(R.layout.activity_privacy);
+
         initView();
     }
 
@@ -48,7 +47,6 @@ public class Privacy_Activity extends AppCompatActivity {
         privacy_web = (WebView) findViewById(R.id.privacy_web);
         privacy_web.setWebViewClient(new MyWebViewClient());
         openURL();
-
     }
 
 

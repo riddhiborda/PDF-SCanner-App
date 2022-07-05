@@ -2,7 +2,6 @@ package com.pdfscanner.pdf.scanpdf;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -28,8 +27,6 @@ import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.Html;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,13 +35,13 @@ import com.pdfscanner.pdf.scanpdf.Util.Constant;
 import com.pdfscanner.pdf.scanpdf.Util.PreferencesManager;
 import com.pdfscanner.pdf.scanpdf.Util.RxBus;
 import com.pdfscanner.pdf.scanpdf.Util.Utils;
-import com.pdfscanner.pdf.scanpdf.ad.AdmobAdManager;
+import com.pdfscanner.pdf.scanpdf.ads.AdmobAdsManager;
 import com.pdfscanner.pdf.scanpdf.adapter.RecentAdapter;
 import com.pdfscanner.pdf.scanpdf.databinding.ActivityMainBinding;
-import com.pdfscanner.pdf.scanpdf.listener.HomeDeleteUpdate;
-import com.pdfscanner.pdf.scanpdf.listener.HomeRenameUpdate;
-import com.pdfscanner.pdf.scanpdf.listener.HomeUpdate;
-import com.pdfscanner.pdf.scanpdf.model.PdfModel;
+import com.pdfscanner.pdf.scanpdf.model.home.UpdateDelete;
+import com.pdfscanner.pdf.scanpdf.model.home.RenameUpdate;
+import com.pdfscanner.pdf.scanpdf.model.home.Update;
+import com.pdfscanner.pdf.scanpdf.model.PDFModel;
 import com.pdfscanner.pdf.scanpdf.rating.BaseRatingBar;
 import com.pdfscanner.pdf.scanpdf.rating.RotationRatingBar;
 import com.pdfscanner.pdf.scanpdf.ui.DocumentActivity;
@@ -53,8 +50,6 @@ import com.pdfscanner.pdf.scanpdf.ui.ImageShowActivity;
 import com.pdfscanner.pdf.scanpdf.ui.ImageToPdfActivity;
 import com.pdfscanner.pdf.scanpdf.ui.QrScanActivity;
 import com.pdfscanner.pdf.scanpdf.ui.SettingActivity;
-import com.pdfscanner.pdf.scanpdf.ui.SplashActivity;
-import com.pdfscanner.pdf.scanpdf.ui.SubscriptionActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -77,11 +72,11 @@ public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
     public static String mCurrentPhotoPath;
     RecentAdapter adapter;
-    ArrayList<PdfModel> recentList = new ArrayList<>();
+    ArrayList<PDFModel> recentList = new ArrayList<>();
 
     public static String type;
     public static int imageCount = 1;
-    AdmobAdManager admobAdManager;
+    AdmobAdsManager admobAdsManager;
 
 
     @Override
@@ -92,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         }
         changeStatusBarColor(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        admobAdManager = AdmobAdManager.getInstance(this);
+        admobAdsManager = AdmobAdsManager.getInstance(this);
 
         intView();
 
@@ -117,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
         rating_count = 0;
         final Dialog rateUsDialog = new Dialog(this, R.style.WideDialog);
         rateUsDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        rateUsDialog.setContentView(R.layout.dialog_rate_us);
+        rateUsDialog.setContentView(R.layout.rate_us_dialog);
         rateUsDialog.setCancelable(true);
         rateUsDialog.setCanceledOnTouchOutside(true);
 
@@ -225,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (!PreferencesManager.getString(MainActivity.this,Constant.INTERSTITIAL_ID).isEmpty()){
                     if (counter == PreferencesManager.getInteger(MainActivity.this,Constant.ADS_COUNTER)){
-                        admobAdManager.loadInterstitialAd(MainActivity.this, PreferencesManager.getString(MainActivity.this,Constant.INTERSTITIAL_ID), 3, new AdmobAdManager.OnAdClosedListener() {
+                        admobAdsManager.loadInterstitialAd(MainActivity.this, PreferencesManager.getString(MainActivity.this,Constant.INTERSTITIAL_ID), 3, new AdmobAdsManager.OnAdClosedListener() {
                             @Override
                             public void onAdClosed(Boolean isShowADs) {
                                 PreferencesManager.saveInteger(MainActivity.this,Constant.MAIN_ACTIVITY,0);
@@ -605,9 +600,9 @@ public class MainActivity extends AppCompatActivity {
 
     String[] types = new String[]{".pdf"};
 
-    public ArrayList<PdfModel> getRecentList() {
+    public ArrayList<PDFModel> getRecentList() {
 
-        ArrayList<PdfModel> list = new ArrayList<>();
+        ArrayList<PDFModel> list = new ArrayList<>();
 
         Cursor mCursor = null;
         String sortOrder = "LOWER(" + MediaStore.Files.FileColumns.DATE_MODIFIED + ") DESC"; // unordered
@@ -658,7 +653,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 String title = mCursor.getString(mCursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE));
 
-                                PdfModel model = new PdfModel();
+                                PDFModel model = new PDFModel();
                                 model.setFilePath(path);
                                 model.setFileName(title);
                                 model.setSize(size);
@@ -712,10 +707,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void recentRenameUpdate() {
 
-        Subscription subscription = RxBus.getInstance().toObservable(HomeRenameUpdate.class).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).distinctUntilChanged().subscribe(new Action1<HomeRenameUpdate>() {
+        Subscription subscription = RxBus.getInstance().toObservable(RenameUpdate.class).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).distinctUntilChanged().subscribe(new Action1<RenameUpdate>() {
                     @Override
-                    public void call(HomeRenameUpdate event) {
+                    public void call(RenameUpdate event) {
                         if (event.getOldFile() != null && !event.getOldFile().equals("") && event.getRenameFile() != null && !event.getRenameFile().equals("")) {
 
                             if (recentList != null && recentList.size() != 0) {
@@ -749,11 +744,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void recentDeleteUpdate() {
-
-        Subscription subscription = RxBus.getInstance().toObservable(HomeDeleteUpdate.class).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).distinctUntilChanged().subscribe(new Action1<HomeDeleteUpdate>() {
+        Subscription subscription = RxBus.getInstance().toObservable(UpdateDelete.class).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).distinctUntilChanged().subscribe(new Action1<UpdateDelete>() {
                     @Override
-                    public void call(HomeDeleteUpdate event) {
+                    public void call(UpdateDelete event) {
                         if (event.getFilePath() != null && !event.getFilePath().equals("")) {
 
                             if (recentList != null && recentList.size() != 0) {
@@ -766,11 +760,8 @@ public class MainActivity extends AppCompatActivity {
                                             adapter.notifyItemRemoved(k);
 //                                            adapter.notifyDataSetChanged();
 //                                            adapter.notifyItemRemoved(k);
-
                                         break;
                                     }
-
-
                                 }
                             }
 
@@ -786,10 +777,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void recentUpdate() {
 
-        Subscription subscription = RxBus.getInstance().toObservable(HomeUpdate.class).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).distinctUntilChanged().subscribe(new Action1<HomeUpdate>() {
+        Subscription subscription = RxBus.getInstance().toObservable(Update.class).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).distinctUntilChanged().subscribe(new Action1<Update>() {
                     @Override
-                    public void call(HomeUpdate event) {
+                    public void call(Update event) {
                         if (event.getFilePath() != null && !event.equals("")) {
 
                             File file = new File(event.getFilePath());
@@ -797,7 +788,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 if (contains(types, file.getPath())) {
 
-                                    PdfModel model = new PdfModel();
+                                    PDFModel model = new PDFModel();
                                     model.setFilePath(file.getPath());
                                     model.setFileName(file.getName());
                                     model.setSize(file.length());

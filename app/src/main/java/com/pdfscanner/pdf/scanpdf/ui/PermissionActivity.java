@@ -23,7 +23,6 @@ import com.pdfscanner.pdf.scanpdf.service.ImageDataService;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class PermissionActivity extends AppCompatActivity {
 
     Toolbar toolbar;
@@ -41,9 +40,7 @@ public class PermissionActivity extends AppCompatActivity {
         intView();
     }
 
-
     private void intView() {
-
         toolbar = findViewById(R.id.toolbar);
         txtDec = findViewById(R.id.txt_dec);
 
@@ -56,10 +53,6 @@ public class PermissionActivity extends AppCompatActivity {
             }
         });
 
-
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setTitle("   " + getResources().getString(R.string.app_name));
-
         if (isPermissionGranted()) {
             showHomeScreen();
         }
@@ -67,51 +60,40 @@ public class PermissionActivity extends AppCompatActivity {
     }
 
     private void showHomeScreen() {
-
         startService(new Intent(PermissionActivity.this, ImageDataService.class));
-
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 
 
     public boolean isPermissionGranted() {
-        boolean permission = true;
         if (Build.VERSION.SDK_INT >= 23) {
             if (ActivityCompat.checkSelfPermission(PermissionActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission(PermissionActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-
                 return true;
             } else {
-
                 return false;
             }
         } else { //permission is automatically granted on sdk<23 upon installation
-
             return true;
         }
     }
 
     public boolean isStoragePermissionGranted() {
-        boolean permission = true;
         if (Build.VERSION.SDK_INT >= 23) {
             if (ActivityCompat.checkSelfPermission(PermissionActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission(PermissionActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-
                 return true;
             } else {
                 GetStorage_Permission();
                 return false;
             }
         } else { //permission is automatically granted on sdk<23 upon installation
-
             return true;
         }
     }
 
     private void GetStorage_Permission() {
-
         List<String> permissionsNeeded = new ArrayList<String>();
         final List<String> permissionsList = new ArrayList<String>();
 
@@ -123,7 +105,6 @@ public class PermissionActivity extends AppCompatActivity {
 
         if (!addPermission(permissionsList, Manifest.permission.CAMERA))
             permissionsNeeded.add("Camrea");
-
 
         if (permissionsList.size() > 0) {
             if (permissionsNeeded.size() > 0) {
@@ -151,22 +132,18 @@ public class PermissionActivity extends AppCompatActivity {
                     return false;
             }
         }
-
         return true;
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
         if (requestCode == 1) {
             if (permissions.length >= 1)
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     showHomeScreen();
                 }
         }
-
         return;
-
     }
 }

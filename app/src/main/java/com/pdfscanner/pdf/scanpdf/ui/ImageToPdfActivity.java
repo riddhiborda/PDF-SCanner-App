@@ -35,12 +35,11 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.pdfscanner.pdf.scanpdf.R;
 import com.pdfscanner.pdf.scanpdf.Util.Constant;
-import com.pdfscanner.pdf.scanpdf.Util.PreferencesManager;
 import com.pdfscanner.pdf.scanpdf.Util.RecyclerTouchListener;
 import com.pdfscanner.pdf.scanpdf.Util.Utils;
 import com.pdfscanner.pdf.scanpdf.adapter.PdfAdapter;
 import com.pdfscanner.pdf.scanpdf.databinding.ActivityImageToPdfBinding;
-import com.pdfscanner.pdf.scanpdf.model.PdfModel;
+import com.pdfscanner.pdf.scanpdf.model.PDFModel;
 import com.pdfscanner.pdf.scanpdf.pdf.ImageToPDFOptions;
 import com.rajat.pdfviewer.PdfViewerActivity;
 
@@ -60,7 +59,7 @@ public class ImageToPdfActivity extends AppCompatActivity {
     ProgressDialog loadingDialog;
     File openFile = null;
 
-    ArrayList<PdfModel> pdfList = new ArrayList<>();
+    ArrayList<PDFModel> pdfList = new ArrayList<>();
 
     PdfAdapter adapter;
 
@@ -342,9 +341,9 @@ public class ImageToPdfActivity extends AppCompatActivity {
 
     String[] types = new String[]{".pdf"};
 
-    public ArrayList<PdfModel> getList() {
+    public ArrayList<PDFModel> getList() {
 
-        ArrayList<PdfModel> list = new ArrayList<>();
+        ArrayList<PDFModel> list = new ArrayList<>();
 
         Cursor mCursor = null;
 
@@ -390,7 +389,7 @@ public class ImageToPdfActivity extends AppCompatActivity {
 
                                 String title = mCursor.getString(mCursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE));
 
-                                PdfModel model = new PdfModel();
+                                PDFModel model = new PDFModel();
                                 model.setFilePath(path);
                                 model.setFileName(title);
                                 model.setSize(size);
@@ -485,6 +484,7 @@ public class ImageToPdfActivity extends AppCompatActivity {
 
 
         try {
+
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(mPath));
 
             Log.v("Stage 3", "Pdf writer");
@@ -585,7 +585,7 @@ public class ImageToPdfActivity extends AppCompatActivity {
 
                     mPdfOptions.getImagesUri().clear();
 
-                    PdfModel model = new PdfModel();
+                    PDFModel model = new PDFModel();
                     model.setFilePath(mPath);
                     model.setFileName(openFile.getName());
                     model.setSize(openFile.length());

@@ -19,7 +19,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.pdfscanner.pdf.scanpdf.R;
 import com.pdfscanner.pdf.scanpdf.model.PhotoData;
-import com.pdfscanner.pdf.scanpdf.oncliclk.OnSelectImage;
+import com.pdfscanner.pdf.scanpdf.listener.OnSelectImage;
 import com.pdfscanner.pdf.scanpdf.ui.ImageActivity;
 
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder> {
 
     Context context;
-    ArrayList<PhotoData> photoList = new ArrayList<>();
+    ArrayList<PhotoData> photoList;
     int i2, i3, h, w;
     int deviceheight, devicewidth;
     OnSelectImage onSelectImage;

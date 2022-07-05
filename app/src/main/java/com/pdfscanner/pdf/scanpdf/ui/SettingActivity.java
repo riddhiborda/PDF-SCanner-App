@@ -3,7 +3,6 @@ package com.pdfscanner.pdf.scanpdf.ui;
 import static com.pdfscanner.pdf.scanpdf.Util.Utils.changeStatusBarColor;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
 import android.content.ActivityNotFoundException;
@@ -15,9 +14,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import com.pdfscanner.pdf.scanpdf.MainActivity;
 import com.pdfscanner.pdf.scanpdf.R;
-import com.pdfscanner.pdf.scanpdf.Util.Utils;
 import com.pdfscanner.pdf.scanpdf.databinding.ActivitySettingBinding;
 
 public class SettingActivity extends AppCompatActivity {
@@ -100,7 +97,7 @@ public class SettingActivity extends AppCompatActivity {
         binding.btnPrivacyPolicy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(SettingActivity.this, Privacy_Activity.class));
+                startActivity(new Intent(SettingActivity.this, PrivacyActivity.class));
             }
         });
         binding.btnMoreApp.setOnClickListener(new View.OnClickListener() {

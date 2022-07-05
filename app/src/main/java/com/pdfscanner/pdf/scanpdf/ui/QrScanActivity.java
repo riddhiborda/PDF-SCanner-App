@@ -12,6 +12,7 @@ import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -25,7 +26,6 @@ import com.pdfscanner.pdf.scanpdf.databinding.ActivityQrScanBinding;
 public class QrScanActivity extends AppCompatActivity {
 
     ActivityQrScanBinding binding;
-
     CodeScanner mCodeScanner;
 
     @Override
@@ -40,48 +40,24 @@ public class QrScanActivity extends AppCompatActivity {
     }
 
     public void intView() {
-
         mCodeScanner = new CodeScanner(this, binding.scannerView);
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
             public void onDecoded(@NonNull Result result) {
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-//                        Toast.makeText(QrScanActivity.this, result.getText(), Toast.LENGTH_SHORT).show();
-                        if (result != null)
-                            showResult(result.getText());
-                        mCodeScanner.startPreview();
-
-
-                    }
+                runOnUiThread(() -> {
+                    if (result != null)
+                        showResult(result.getText());
+                    mCodeScanner.startPreview();
                 });
-
             }
         });
 
-        mCodeScanner.setErrorCallback(new ErrorCallback() {
-            @Override
-            public void onError(@NonNull Exception error) {
+        mCodeScanner.setErrorCallback(error -> Log.e("TAG", "intView: " + error.getMessage()));
 
-            }
-        });
-
-        binding.icBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        binding.icBack.setOnClickListener(v -> onBackPressed());
 
 
-        binding.scannerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCodeScanner.startPreview();
-            }
-        });
+        binding.scannerView.setOnClickListener(v -> mCodeScanner.startPreview());
 
     }
 
@@ -105,31 +81,19 @@ public class QrScanActivity extends AppCompatActivity {
         }
 
         boolean finalIsUrl = isUrl;
-        binding.btnOpenCpoy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (finalIsUrl) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(result)));
-
-                } else {
-                    ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                    ClipData clip = ClipData.newPlainText("label", result);
-                    if (clipboard == null || clip == null) return;
-                    clipboard.setPrimaryClip(clip);
-
-                    Toast.makeText(QrScanActivity.this, "Text copied!", Toast.LENGTH_SHORT).show();
-
-                }
+        binding.btnOpenCpoy.setOnClickListener(v -> {
+            if (finalIsUrl) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(result)));
+            } else {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("label", result);
+                if (clipboard == null || clip == null) return;
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(QrScanActivity.this, "Text copied!", Toast.LENGTH_SHORT).show();
             }
         });
 
-        binding.btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                binding.loutResult.setVisibility(View.GONE);
-            }
-        });
-
+        binding.btnClose.setOnClickListener(v -> binding.loutResult.setVisibility(View.GONE));
     }
 
     @Override

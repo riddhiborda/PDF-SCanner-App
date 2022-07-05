@@ -1,4 +1,4 @@
-package com.pdfscanner.pdf.scanpdf.ad;
+package com.pdfscanner.pdf.scanpdf.ads;
 
 import android.app.Activity;
 import android.app.Application;
@@ -24,25 +24,18 @@ import java.util.Date;
 import static androidx.lifecycle.Lifecycle.Event.ON_START;
 import static com.pdfscanner.pdf.scanpdf.Util.Constant.SHOW_OPEN_ADS;
 
-public class AppOpenManager implements LifecycleObserver, Application.ActivityLifecycleCallbacks {
+public class AppOpenAdsManager implements LifecycleObserver, Application.ActivityLifecycleCallbacks {
     private static final String LOG_TAG = "AppOpenManager";
     //    public static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/1033173712";     // Test ID
     public static String AD_UNIT_ID;
-
     private AppOpenAd appOpenAd = null;
-
     private AppOpenAd.AppOpenAdLoadCallback loadCallback;
-
     private final Application myApplication;
     private Activity currentActivity;
-
     private static boolean isShowingAd = false;
     private long loadTime = 0;
 
-    /**
-     * Constructor
-     */
-    public AppOpenManager(Application myApplication) {
+    public AppOpenAdsManager(Application myApplication) {
         this.myApplication = myApplication;
         this.myApplication.registerActivityLifecycleCallbacks(this);
         ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
@@ -52,12 +45,10 @@ public class AppOpenManager implements LifecycleObserver, Application.ActivityLi
         return true;
     }
 
-
     @OnLifecycleEvent(ON_START)
     public void onStart() {
         Log.e("ads", "open ads start: " + SHOW_OPEN_ADS);
         if (SHOW_OPEN_ADS) {
-//            if (!Constant.HIDE_GIFT_OPEN_ADS)
             if (getShowAds(currentActivity))
                 if (currentActivity != null) {
                     showAdIfAvailable();
@@ -85,11 +76,11 @@ public class AppOpenManager implements LifecycleObserver, Application.ActivityLi
 
             @Override
             public void onAppOpenAdFailedToLoad(LoadAdError loadAdError) {
-//                Toast.makeText(myApplication,  "AppOpen: error code: "+ loadAdError.getCode() + " msg: "+loadAdError.getMessage(), Toast.LENGTH_LONG).show();
                 Log.d(LOG_TAG, loadAdError.getMessage());
             }
 
         };
+
         AdRequest request = getAdRequest();
         if (currentActivity != null) {
             AD_UNIT_ID = currentActivity.getResources().getString(R.string.app_open_id);
@@ -149,39 +140,39 @@ public class AppOpenManager implements LifecycleObserver, Application.ActivityLi
 
     @Override
     public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle bundle) {
-        Log.d("Data", "onActivityCreated: ====> create");
+        Log.d(LOG_TAG, "onActivityCreated: ====> create");
     }
 
     @Override
     public void onActivityStarted(@NonNull Activity activity) {
-        Log.d("Data", "onActivityCreated: ====> started");
+        Log.d(LOG_TAG, "onActivityCreated: ====> started");
         currentActivity = activity;
     }
 
     @Override
     public void onActivityResumed(@NonNull Activity activity) {
-        Log.d("Data", "onActivityCreated: ====> resume");
+        Log.d(LOG_TAG, "onActivityCreated: ====> resume");
         currentActivity = activity;
     }
 
     @Override
     public void onActivityPaused(@NonNull Activity activity) {
-        Log.d("Data", "onActivityCreated: ====> pause");
+        Log.d(LOG_TAG, "onActivityCreated: ====> pause");
     }
 
     @Override
     public void onActivityStopped(@NonNull Activity activity) {
-        Log.d("Data", "onActivityCreated: ====> stopped");
+        Log.d(LOG_TAG, "onActivityCreated: ====> stopped");
     }
 
     @Override
     public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle bundle) {
-        Log.d("Data", "onActivityCreated: ====> save");
+        Log.d(LOG_TAG, "onActivityCreated: ====> save");
     }
 
     @Override
     public void onActivityDestroyed(@NonNull Activity activity) {
-        Log.d("Data", "onActivityCreated: ====> destroy");
+        Log.d(LOG_TAG, "onActivityCreated: ====> destroy");
         currentActivity = null;
     }
 }

@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.pdfscanner.pdf.scanpdf.R;
 import com.pdfscanner.pdf.scanpdf.Util.Utils;
-import com.pdfscanner.pdf.scanpdf.model.PdfModel;
+import com.pdfscanner.pdf.scanpdf.model.PDFModel;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -26,16 +26,16 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.ViewHolder
 
     Context context;
     private static ClickListener listener;
-    ArrayList<PdfModel> list;
+    ArrayList<PDFModel> list;
 
 
-    public RecentAdapter(Context context, ArrayList<PdfModel> list) {
+    public RecentAdapter(Context context, ArrayList<PDFModel> list) {
         this.context = context;
         this.list = list;
 
     }
 
-    public void setData(ArrayList<PdfModel> arrayList) {
+    public void setData(ArrayList<PDFModel> arrayList) {
         this.list.clear();
         this.list.addAll(arrayList);
         notifyDataSetChanged();

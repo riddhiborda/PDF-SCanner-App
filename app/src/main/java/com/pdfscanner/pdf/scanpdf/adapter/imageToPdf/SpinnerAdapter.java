@@ -14,12 +14,12 @@ import com.pdfscanner.pdf.scanpdf.R;
 
 import java.util.ArrayList;
 
-public class Spinner_Adapter extends ArrayAdapter<String> {
+public class SpinnerAdapter extends ArrayAdapter<String> {
     Context context;
     ArrayList<String> resource;
     LayoutInflater inflater;
 
-    public Spinner_Adapter(Context context, ArrayList<String> resource) {
+    public SpinnerAdapter(Context context, ArrayList<String> resource) {
         super(context, R.layout.support_simple_spinner_dropdown_item);
         this.context = context;
         this.resource = resource;

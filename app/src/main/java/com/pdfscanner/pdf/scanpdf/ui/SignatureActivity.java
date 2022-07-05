@@ -29,47 +29,30 @@ public class SignatureActivity extends AppCompatActivity {
         changeStatusBarColor(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_signature);
 
-        intView();
+        initClick();
     }
 
-    public void intView() {
+    private void initClick() {
+        binding.icBack.setOnClickListener(v -> finish());
+
+        binding.btnReset.setOnClickListener(v -> binding.signatureView.clearCanvas());
 
 
-        binding.icBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        binding.btnSave.setOnClickListener(v -> {
+            if (!binding.signatureView.isBitmapEmpty()) {
+                Bitmap bitmap = binding.signatureView.getSignatureBitmap();
 
-        binding.btnReset.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                binding.signatureView.clearCanvas();
-            }
-        });
-
-
-        binding.btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (!binding.signatureView.isBitmapEmpty()) {
-                    Bitmap bitmap = binding.signatureView.getSignatureBitmap();
-
-                    if (bitmap != null) {
-                        Constant.signatureBitmap = null;
-                        Constant.signatureBitmap = bitmap;
-                        setResult(RESULT_OK);
-                        finish();
-                    }
-
-                } else {
-                    Toast.makeText(SignatureActivity.this, "Please cretae signature", Toast.LENGTH_SHORT).show();
-
+                if (bitmap != null) {
+                    Constant.signatureBitmap = null;
+                    Constant.signatureBitmap = bitmap;
+                    setResult(RESULT_OK);
+                    finish();
                 }
+
+            } else {
+                Toast.makeText(SignatureActivity.this, "Please cretae signature", Toast.LENGTH_SHORT).show();
+
             }
         });
-
     }
 }

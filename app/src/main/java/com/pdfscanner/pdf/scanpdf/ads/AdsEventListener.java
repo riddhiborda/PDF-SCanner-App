@@ -1,9 +1,7 @@
-package com.pdfscanner.pdf.scanpdf.ad;
+package com.pdfscanner.pdf.scanpdf.ads;
 
-public interface AdEventListener {
+public interface AdsEventListener {
     void onAdLoaded(Object object);
-
     void onAdClosed();
-
     void onLoadError(String errorCode);
 }

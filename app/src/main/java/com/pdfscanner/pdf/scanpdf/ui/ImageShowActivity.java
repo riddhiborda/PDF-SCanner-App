@@ -32,6 +32,7 @@ public class ImageShowActivity extends AppCompatActivity {
 
     ActivityImageShowBinding binding;
     String filePath;
+    File file;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,19 +43,16 @@ public class ImageShowActivity extends AppCompatActivity {
         changeStatusBarColor(this);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_image_show);
 
-        intView();
+        initData();
+        initClick();
     }
 
-    public void intView() {
-
+    private void initData() {
         Intent intent = getIntent();
         if (intent != null) {
-
             filePath = intent.getStringExtra("filePath");
-
-            File file = new File(filePath);
+            file = new File(filePath);
             binding.title.setText(file.getName());
-
 
             binding.imgDisplay.getController().getSettings()
                     .setMaxZoom(6f)
@@ -67,65 +65,40 @@ public class ImageShowActivity extends AppCompatActivity {
                     .skipMemoryCache(true)
                     .into(binding.imgDisplay);
 
-            binding.icBack.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    onBackPressed();
-                }
-            });
-
-            binding.btnDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    deleteDialog(file);
-                }
-            });
-
-            binding.btnShare.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    String extra_text = "https://play.google.com/store/apps/details?id=" + getPackageName();
-                    Uri uri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".provider", file);
-                    Intent shareIntent = new Intent();
-                    shareIntent.setAction("android.intent.action.SEND");
-                    shareIntent.setType(Utils.getMimeTypeFromFilePath(file.getPath()));
-                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.app_name));
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, extra_text);
-                    shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-
-                    startActivity(Intent.createChooser(shareIntent, "Share with..."));
-
-                }
-            });
-
-
-            binding.btnEdit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    startActivityForResult(new Intent(ImageShowActivity.this, EditDocumentActivity.class)
-                            .putExtra("filePath", filePath), 10);
-
-                }
-            });
-
         }
+    }
+
+    private void initClick() {
+        binding.icBack.setOnClickListener(v -> onBackPressed());
+
+        binding.btnDelete.setOnClickListener(v -> deleteDialog(file));
+
+        binding.btnShare.setOnClickListener(v -> {
+            String extra_text = "https://play.google.com/store/apps/details?id=" + getPackageName();
+            Uri uri = FileProvider.getUriForFile(getApplicationContext(), getPackageName() + ".provider", file);
+            Intent shareIntent = new Intent();
+            shareIntent.setAction("android.intent.action.SEND");
+            shareIntent.setType(Utils.getMimeTypeFromFilePath(file.getPath()));
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.app_name));
+            shareIntent.putExtra(Intent.EXTRA_TEXT, extra_text);
+            shareIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+
+            startActivity(Intent.createChooser(shareIntent, "Share with..."));
+        });
+
+        binding.btnEdit.setOnClickListener(v -> startActivityForResult(new Intent(ImageShowActivity.this, EditDocumentActivity.class)
+                .putExtra("filePath", filePath), 10));
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == 10) {
-
-
             binding.imgDisplay.getController().getSettings()
                     .setMaxZoom(6f)
                     .setMinZoom(0)
                     .setDoubleTapZoom(3f);
-
 
 //            Glide.with(ImageShowActivity.this)
 //                    .load(filePath)
@@ -139,14 +112,10 @@ public class ImageShowActivity extends AppCompatActivity {
                         .load(bitmap)
                         .into(binding.imgDisplay);
             }
-
         }
-
     }
 
-
     public void deleteDialog(File file) {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(ImageShowActivity.this);
         builder.setMessage("Are you sure do you want to delete it?");
         builder.setCancelable(false);
@@ -176,8 +145,6 @@ public class ImageShowActivity extends AppCompatActivity {
 
             }
         });
-
         builder.show();
-
     }
 }

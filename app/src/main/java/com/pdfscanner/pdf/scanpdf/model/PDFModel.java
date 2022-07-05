@@ -1,6 +1,6 @@
 package com.pdfscanner.pdf.scanpdf.model;
 
-public class PdfModel {
+public class PDFModel {
     String fileName;
     String filePath;
     long size;
