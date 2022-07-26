@@ -5,6 +5,7 @@ import static com.pdfscanner.pdf.scanpdf.Util.Utils.changeStatusBarColor;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -59,7 +60,6 @@ public class OcrActivity extends AppCompatActivity {
     int imageQuality = 30;
     ImageToPDFOptions mPdfOptions;
     private int mPageColor;
-    private String mPageNumStyle;
     ProgressDialog loadingDialog;
 
     @Override
@@ -78,9 +78,7 @@ public class OcrActivity extends AppCompatActivity {
 
     private void initData() {
         bitmap = Constant.cropBitmap1;
-
         binding.imageView.setImageBitmap(bitmap);
-
         textRecognizer = new TextRecognizer.Builder(OcrActivity.this).build();
 
         getOcrData();
@@ -102,7 +100,6 @@ public class OcrActivity extends AppCompatActivity {
         });
 
         binding.btnSave.setOnClickListener(v -> saveImage());
-
         binding.icBack.setOnClickListener(v -> onBackPressed());
     }
 
@@ -115,22 +112,16 @@ public class OcrActivity extends AppCompatActivity {
     }
 
     public void seTexttData() {
-
         if (textBlocks != null && textBlocks.size() != 0) {
             copyText = "";
             for (int i = 0; i < textBlocks.size(); i++) {
                 TextBlock textBlock = textBlocks.get(textBlocks.keyAt(i));
                 String imageText = textBlock.getValue();
 
-                //   imageText = imageText.replaceAll("[\r\n]+", " ");
-
-
                 String[] separated = imageText.split("[\r\n]+");
 
                 if (separated != null && separated.length != 0) {
-
                     for (int j = 0; j < separated.length; j++) {
-
                         String textImage = separated[j];
                         if (textImage != null && !textImage.equalsIgnoreCase("")) {
 
@@ -160,7 +151,6 @@ public class OcrActivity extends AppCompatActivity {
                         }
                     }
                 } else {
-
                     TextView textView = new TextView(this);
                     textView.setText(imageText);
                     textView.setTextSize(15);
@@ -186,10 +176,10 @@ public class OcrActivity extends AppCompatActivity {
                     }
                 }
             }
-
         }
     }
 
+    @SuppressLint("CheckResult")
     public void getOcrData() {
         binding.progressBar.setVisibility(View.VISIBLE);
 
@@ -201,19 +191,15 @@ public class OcrActivity extends AppCompatActivity {
             textBlocks = textRecognizer.detect(imageFrame);
             return true;
         }).subscribeOn(io.reactivex.schedulers.Schedulers.io())
-                .doOnError(throwable -> {
-                    runOnUiThread(() -> {
-                        binding.progressBar.setVisibility(View.GONE);
-                        seTexttData();
+                .doOnError(throwable -> runOnUiThread(() -> {
+                    binding.progressBar.setVisibility(View.GONE);
+                    seTexttData();
 
-                    });
-                })
-                .subscribe((result) -> {
-                    runOnUiThread(() -> {
-                        binding.progressBar.setVisibility(View.GONE);
-                        seTexttData();
-                    });
-                });
+                }))
+                .subscribe((result) -> runOnUiThread(() -> {
+                    binding.progressBar.setVisibility(View.GONE);
+                    seTexttData();
+                }));
     }
 
     public void setPdfIntview() {
@@ -241,7 +227,6 @@ public class OcrActivity extends AppCompatActivity {
     String pdfpath;
 
     public void cratePdfFile() {
-
         String mPassword;
         String mQualityString;
         int mBorderWidth;
@@ -253,55 +238,47 @@ public class OcrActivity extends AppCompatActivity {
         int mMarginBottom;
         int mMarginRight;
         int mMarginLeft;
-        String mImageScaleType;
-        String mPageNumStyle;
         String mMasterPwd;
         int mPageColor;
 
-
         mPassword = mPdfOptions.getPassword();
         mQualityString = mPdfOptions.getQualityString();
-//        mOnPDFCreatedInterface = onPDFCreated;
         mPageSize = mPdfOptions.getPageSize();
         mPasswordProtected = mPdfOptions.isPasswordProtected();
         mBorderWidth = mPdfOptions.getBorderWidth();
-//        mWatermark = mPdfOptions.getWatermark();
         mMarginTop = mPdfOptions.getMarginTop();
         mMarginBottom = mPdfOptions.getMarginBottom();
         mMarginRight = mPdfOptions.getMarginRight();
         mMarginLeft = mPdfOptions.getMarginLeft();
-        mImageScaleType = mPdfOptions.getImageScaleType();
-        mPageNumStyle = mPdfOptions.getPageNumStyle();
         mMasterPwd = mPdfOptions.getMasterPwd();
         mPageColor = mPdfOptions.getPageColor();
 
+        File sd = getCacheDir();
+        File rootfolder = new File(sd, "/" + getString(R.string.app_name));
+        if (!rootfolder.isDirectory()) {
+            rootfolder.mkdir();
+        }
 
-        File folderFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name));
-        if (!folderFile.exists())
-            folderFile.mkdir();
-
-        File dirFile = new File(folderFile.getPath() + "/" + Constant.hiddenImagePath);
-        if (!dirFile.exists())
-            dirFile.mkdir();
-
-//        String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        File subfolder = new File(sd, "/" + getString(R.string.app_name) + "/" + Constant.hiddenImagePath);
+        if (!subfolder.isDirectory()){
+            subfolder.mkdir();
+        }
 
         String pdfName = Constant.ocr + "_" + System.currentTimeMillis() + ".pdf";
         String imageName = Constant.ocr + "_" + System.currentTimeMillis() + ".png";
         String textFileName = Constant.ocr + "_" + System.currentTimeMillis() + ".txt";
 
-        mPath = folderFile.getPath() + "/" + pdfName;
+        mPath = rootfolder.getAbsolutePath() + "/" + pdfName;
         pdfpath = mPath;
         mSuccess = true;
 
         Bitmap bm = bitmap;
 
-        File pictureFile = new File(dirFile.getPath() + "/" + imageName);
+        File pictureFile = new File(subfolder.getAbsoluteFile() + "/" + imageName);
         if (bitmap != null) {
             FileOutputStream out = null;
             try {
                 out = new FileOutputStream(pictureFile.getPath());
-
                 //write the compressed bitmap at the destination specified by filename.
                 bitmap.compress(Bitmap.CompressFormat.PNG, imageQuality, out);
 
@@ -316,7 +293,6 @@ public class OcrActivity extends AppCompatActivity {
                     }
                 });
                 mSuccess = true;
-//                return pictureFile.getPath();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -324,7 +300,6 @@ public class OcrActivity extends AppCompatActivity {
                 Log.e("error", "Message: " + e.getMessage());
             }
         }
-
 
         if (mSuccess) {
             Rectangle pageSize = new Rectangle(PageSize.getRectangle(mPageSize));
@@ -343,7 +318,6 @@ public class OcrActivity extends AppCompatActivity {
                             PdfWriter.ENCRYPTION_AES_128);
 
                 }
-
                 document.open();
 
                 int quality;
@@ -351,12 +325,6 @@ public class OcrActivity extends AppCompatActivity {
                 if (mQualityString != null && !mQualityString.toString().trim().equals("")) {
                     quality = Integer.parseInt(mQualityString);
                 }
-
-
-//                int size = bitmap.getRowBytes() * bitmap.getHeight();
-//                ByteBuffer byteBuffer = ByteBuffer.allocate(size);
-//                bitmap.copyPixelsToBuffer(byteBuffer);
-//                byte[] byteArray = byteBuffer.array();
 
                 Image image = Image.getInstance(pictureFile.getPath());
                 // compressionLevel is a value between 0 (best speed) and 9 (best compression)
@@ -366,13 +334,8 @@ public class OcrActivity extends AppCompatActivity {
                 image.setBorder(Rectangle.BOX);
                 image.setBorderWidth(mBorderWidth);
 
-
                 float pageWidth = document.getPageSize().getWidth() - (mMarginLeft + mMarginRight);
                 float pageHeight = document.getPageSize().getHeight() - (mMarginBottom + mMarginTop);
-//            if (mImageScaleType.equals(Constants.IMAGE_SCALE_TYPE_ASPECT_RATIO))
-//                image.scaleToFit(pageWidth, pageHeight);
-//            else
-//                image.scaleAbsolute(pageWidth, pageHeight);
 
                 image.scaleToFit(pageWidth, pageHeight);
 
@@ -380,9 +343,6 @@ public class OcrActivity extends AppCompatActivity {
                         (documentRect.getHeight() - image.getScaledHeight()) / 2);
 
                 document.add(image);
-
-//                document.newPage();
-
                 document.close();
 
             } catch (Exception e) {
@@ -390,14 +350,14 @@ public class OcrActivity extends AppCompatActivity {
                 mSuccess = false;
             }
         }
-        if (dirFile.exists()) {
-            Utils.deleteFiles(dirFile, OcrActivity.this);
+        if (subfolder.exists()) {
+            Utils.deleteFiles(subfolder, OcrActivity.this);
         }
 
         // save ocr text file
         if (mSuccess && copyText != null){
             try {
-                File textFile = new File(folderFile,textFileName);
+                File textFile = new File(rootfolder,textFileName);
                 FileWriter writer = new FileWriter(textFile);
                 writer.append(copyText);
                 writer.flush();
@@ -406,39 +366,27 @@ public class OcrActivity extends AppCompatActivity {
             }catch (Exception e){
                 e.printStackTrace();
             }
-
         }
 
         boolean finalMSuccess = mSuccess;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+        runOnUiThread(() -> {
+            if (loadingDialog != null) {
+                loadingDialog.dismiss();
+            }
 
-
-                if (loadingDialog != null) {
-                    loadingDialog.dismiss();
-                }
-
-                if (finalMSuccess) {
-
-                    MediaScannerConnection.scanFile(OcrActivity.this, new String[]{mPath}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                        public void onScanCompleted(String path, Uri uri) {
-                            // Log.i("ExternalStorage", "Scanned " + path + ":" + uri);
-                        }
-                    });
-
-                    RxBus.getInstance().post(new Update(mPath));
-
-                    Toast.makeText(OcrActivity.this, "OCR save successfully", Toast.LENGTH_SHORT).show();
-//                    Toast.makeText(OcrActivity.this, "Cretae pdf successfully", Toast.LENGTH_SHORT).show();
-                    finish();
-
-                } else {
-                    Toast.makeText(OcrActivity.this, "error", Toast.LENGTH_SHORT).show();
-                }
+            if (finalMSuccess) {
+                MediaScannerConnection.scanFile(OcrActivity.this, new String[]{mPath}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                    public void onScanCompleted(String path, Uri uri) {
+                        // Log.i("ExternalStorage", "Scanned " + path + ":" + uri);
+                    }
+                });
+                RxBus.getInstance().post(new Update(mPath));
+                Toast.makeText(OcrActivity.this, "OCR save successfully", Toast.LENGTH_SHORT).show();
+                finish();
+            } else {
+                Toast.makeText(OcrActivity.this, "error", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     private BaseColor getBaseColor(int color) {
@@ -448,5 +396,4 @@ public class OcrActivity extends AppCompatActivity {
                 Color.blue(color)
         );
     }
-
 }

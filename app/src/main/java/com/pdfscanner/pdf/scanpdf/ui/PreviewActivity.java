@@ -174,26 +174,30 @@ public class PreviewActivity extends AppCompatActivity {
         mMasterPwd = mPdfOptions.getMasterPwd();
         mPageColor = mPdfOptions.getPageColor();
         boolean isCreated = false;
-        File folderFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name));
-        if (!folderFile.exists())
-            folderFile.mkdirs();
 
-        File dirFile = new File(folderFile.getPath() + "/" + Constant.hiddenImagePath);
-        if (!dirFile.exists())
-            isCreated = dirFile.mkdirs();
+        File sd = getCacheDir();
+        File rootfolder = new File(sd, "/" + getString(R.string.app_name));
+        if (!rootfolder.isDirectory()) {
+            rootfolder.mkdir();
+        }
 
-//        String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        File subfolder = new File(sd, "/" + getString(R.string.app_name) + "/" + Constant.hiddenImagePath);
+        if (!subfolder.isDirectory()){
+            subfolder.mkdir();
+        }
+
+        Log.e("TAG", "cratePdfFile: " + rootfolder.getAbsolutePath());
 
         String pdfName = type + "_" + System.currentTimeMillis() + ".pdf";
         String imageName = type + "_" + System.currentTimeMillis() + ".png";
 
-        mPath = folderFile.getPath() + "/" + pdfName;
+        mPath = rootfolder.getAbsolutePath() + "/" + pdfName;
         pdfpath = mPath;
         mSuccess = true;
 
         Bitmap bm = bitmap;
 
-        File pictureFile = new File(dirFile.getPath() + "/" + imageName);
+        File pictureFile = new File(subfolder.getAbsoluteFile() + "/" + imageName);
         if (bitmap != null) {
             FileOutputStream out = null;
             try {
@@ -213,8 +217,6 @@ public class PreviewActivity extends AppCompatActivity {
                     }
                 });
                 mSuccess = true;
-//                return pictureFile.getPath();
-
             } catch (Exception e) {
                 e.printStackTrace();
                 mSuccess = false;
@@ -246,10 +248,6 @@ public class PreviewActivity extends AppCompatActivity {
                 if (mQualityString != null && !mQualityString.toString().trim().equals("")) {
                     quality = Integer.parseInt(mQualityString);
                 }
-//                int size = bitmap.getRowBytes() * bitmap.getHeight();
-//                ByteBuffer byteBuffer = ByteBuffer.allocate(size);
-//                bitmap.copyPixelsToBuffer(byteBuffer);
-//                byte[] byteArray = byteBuffer.array();
 
                 Image image = Image.getInstance(pictureFile.getPath());
                 // compressionLevel is a value between 0 (best speed) and 9 (best compression)
@@ -261,10 +259,6 @@ public class PreviewActivity extends AppCompatActivity {
 
                 float pageWidth = document.getPageSize().getWidth() - (mMarginLeft + mMarginRight);
                 float pageHeight = document.getPageSize().getHeight() - (mMarginBottom + mMarginTop);
-//            if (mImageScaleType.equals(Constants.IMAGE_SCALE_TYPE_ASPECT_RATIO))
-//                image.scaleToFit(pageWidth, pageHeight);
-//            else
-//                image.scaleAbsolute(pageWidth, pageHeight);
 
                 image.scaleToFit(pageWidth, pageHeight);
 
@@ -273,7 +267,6 @@ public class PreviewActivity extends AppCompatActivity {
 
                 document.add(image);
 
-//                document.newPage();
                 document.close();
 
             } catch (Exception e) {
@@ -281,8 +274,9 @@ public class PreviewActivity extends AppCompatActivity {
                 mSuccess = false;
             }
         }
-        if (dirFile.exists()) {
-            Utils.deleteFiles(dirFile, PreviewActivity.this);
+
+        if (subfolder.exists()) {
+            Utils.deleteFiles(subfolder, PreviewActivity.this);
         }
 
         boolean finalMSuccess = mSuccess;
@@ -299,7 +293,6 @@ public class PreviewActivity extends AppCompatActivity {
                 if (loadingDialog != null) {
                     loadingDialog.dismiss();
                 }
-//                    Toast.makeText(PreviewActivity.this, "Cretae pdf successfully", Toast.LENGTH_SHORT).show();
                 if (isOriginalClick) {
                     int counter = PreferencesManager.getInteger(PreviewActivity.this,Constant.PREVIEW_ORIGINAL);
                     PreferencesManager.saveInteger(PreviewActivity.this,Constant.PREVIEW_ORIGINAL,counter + 1);

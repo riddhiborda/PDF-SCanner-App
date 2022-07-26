@@ -53,21 +53,17 @@ import java.util.ArrayList;
 public class EditDocumentActivity extends AppCompatActivity {
 
     ActivityEditDocumentBinding binding;
-
     int imageQuality = 30;
     ImageToPDFOptions mPdfOptions;
     private int mPageColor;
     private String mPageNumStyle;
-
     ProgressDialog loadingDialog;
-
-
     Bitmap bitmap;
     private ArrayList<View> mViews;
     private StickerView mCurrentView;
     String filePath;
-
     AdmobAdsManager admobAdsManager;
+    boolean isAlredyExit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,14 +81,7 @@ public class EditDocumentActivity extends AppCompatActivity {
         Intent intent = getIntent();
         mViews = new ArrayList<>();
         if (intent != null) {
-
             filePath = intent.getStringExtra("filePath");
-
-//            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-//            bitmap = BitmapFactory.decodeFile(filePath, bmOptions);
-//
-//            binding.imageView.setImageBitmap(bitmap);
-
 
             binding.imgDisplay.getController().getSettings()
                     .setMaxZoom(6f)
@@ -105,30 +94,11 @@ public class EditDocumentActivity extends AppCompatActivity {
                     .skipMemoryCache(true)
                     .into(binding.imgDisplay);
 
-            binding.btnSignature.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            binding.btnSignature.setOnClickListener(v -> startActivityForResult(new Intent(EditDocumentActivity.this, SignatureActivity.class), 50));
 
-                    startActivityForResult(new Intent(EditDocumentActivity.this, SignatureActivity.class), 50);
-                }
-            });
+            binding.icBack.setOnClickListener(v -> onBackPressed());
 
-            binding.icBack.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    onBackPressed();
-                }
-            });
-
-            binding.btnSave.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    showSaveDilaog(filePath);
-
-                }
-            });
+            binding.btnSave.setOnClickListener(v -> showSaveDilaog(filePath));
 
             loadingDialog = new ProgressDialog(this);
             loadingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -137,17 +107,13 @@ public class EditDocumentActivity extends AppCompatActivity {
 //            loadingDialog.setMessage("Create pdf...");
             loadingDialog.setCanceledOnTouchOutside(false);
         }
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == 50 && resultCode == RESULT_OK) {
-
             addStickerView(Constant.signatureBitmap);
-
         }
     }
 
@@ -155,7 +121,6 @@ public class EditDocumentActivity extends AppCompatActivity {
         if (mCurrentView != null) {
             mCurrentView.setInEdit(false);
         }
-
         mCurrentView = stickerView;
         stickerView.setInEdit(true);
     }
@@ -164,9 +129,7 @@ public class EditDocumentActivity extends AppCompatActivity {
         if (mCurrentView != null) {
             mCurrentView.setInEdit(false);
         }
-
     }
-
 
     public void addStickerView(Bitmap img) {
         if (img != null) {
@@ -178,18 +141,14 @@ public class EditDocumentActivity extends AppCompatActivity {
                 public void onDeleteClick() {
                     mViews.remove(stickerView);
                     binding.loutMain.removeView(stickerView);
-
                 }
 
                 @Override
                 public void onEdit(StickerView stickerView) {
                     mCurrentView.setInEdit(false);
-
                     mCurrentView = stickerView;
                     mCurrentView.setInEdit(true);
-
                     Log.e("onEdit Stricker", " getX: " + stickerView.getX() + " getY: " + stickerView.getY());
-
                 }
 
                 @Override
@@ -201,19 +160,17 @@ public class EditDocumentActivity extends AppCompatActivity {
                     StickerView stickerTemp = (StickerView) mViews.remove(position);
                     mViews.add(mViews.size(), stickerTemp);
                 }
+
             });
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(binding.loutMain.getWidth(), binding.loutMain.getHeight());
             binding.loutMain.addView(stickerView, lp);
             mViews.add(stickerView);
             setCurrentEdit(stickerView);
         }
-
     }
 
     public void setPdfIntview() {
-
         mPdfOptions = new ImageToPDFOptions();
-
         mPdfOptions.setBorderWidth(0);
 
         if (PreferencesManager.getSubscription(EditDocumentActivity.this)) {
@@ -230,10 +187,7 @@ public class EditDocumentActivity extends AppCompatActivity {
         mPdfOptions.setMasterPwd("PDF Converter");
         mPdfOptions.setPageColor(mPageColor);
         mPdfOptions.setMargins(0, 0, 0, 0);
-
     }
-
-    boolean isAlredyExit = false;
 
     public void showSaveDilaog(String filePath) {
         File file = new File(filePath);
@@ -250,39 +204,21 @@ public class EditDocumentActivity extends AppCompatActivity {
         save = dialog.findViewById(R.id.txt_1);
         newAdd = dialog.findViewById(R.id.txt_2);
 
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                bitmap = getImage();
-                if (bitmap != null) {
-//                    String saveFile = saveAlredyExit(bitmap, file);
-                    isAlredyExit = true;
-                    saveImage(bitmap);
-
-//                    if (saveFile != null) {
-//                        setResult(RESULT_OK);
-//
-//                        RxBus.getInstance().post(new HomeUpdate());
-//                        finish();
-//                    } else {
-//                        Toast.makeText(EditDocumentActivity.this, "Error!!", Toast.LENGTH_SHORT).show();
-//                    }
-
-                }
-
+        save.setOnClickListener(v -> {
+            dialog.dismiss();
+            bitmap = getImage();
+            if (bitmap != null) {
+                isAlredyExit = true;
+                saveImage(bitmap);
             }
         });
 
-        newAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                bitmap = getImage();
-                if (bitmap != null) {
-                    saveImage(bitmap);
+        newAdd.setOnClickListener(v -> {
+            dialog.dismiss();
+            bitmap = getImage();
+            if (bitmap != null) {
+                saveImage(bitmap);
 
-                }
             }
         });
 
@@ -290,118 +226,24 @@ public class EditDocumentActivity extends AppCompatActivity {
     }
 
     public Bitmap getImage() {
-
         Bitmap bitmap;
-
         setCurrentEditFalse();
-//        binding.stickerView.setLocked(true);
         binding.loutMain.setDrawingCacheEnabled(true);
         bitmap = binding.loutMain.getDrawingCache().copy(Bitmap.Config.ARGB_8888, false);
         binding.loutMain.destroyDrawingCache();
-
         return bitmap;
-
-    }
-
-    public String saveAlredyExit(Bitmap bitmap, File file) {
-
-        String output = file.getPath();
-        if (file.exists()) {
-            file.delete();
-            MediaScannerConnection.scanFile(EditDocumentActivity.this, new String[]{file.getPath()}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                public void onScanCompleted(String path, Uri uri) {
-                    // Log.i("ExternalStorage", "Scanned " + path + ":" + uri);
-                }
-            });
-        }
-
-
-        File pictureFile = new File(output);
-        if (bitmap != null) {
-            OutputStream out = null;
-            try {
-                out = new FileOutputStream(pictureFile);
-
-                //write the compressed bitmap at the destination specified by filename.
-                bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-
-                out.flush();
-                out.close();
-
-                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                Uri contentUri = Uri.fromFile(pictureFile);
-                mediaScanIntent.setData(contentUri);
-                sendBroadcast(mediaScanIntent);
-
-                MediaScannerConnection.scanFile(EditDocumentActivity.this, new String[]{pictureFile.getPath()}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                    public void onScanCompleted(String path, Uri uri) {
-                        // Log.i("ExternalStorage", "Scanned " + path + ":" + uri);
-                    }
-                });
-                return pictureFile.getPath();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.e("error", "Message: " + e.getMessage());
-            }
-        }
-        return null;
     }
 
     public void saveImage(Bitmap bitmap) {
-
         if (loadingDialog != null) {
-//            loadingDialog.setMessage("Create pdf...");
             loadingDialog.setMessage("Saving...");
             loadingDialog.show();
-
         }
         setPdfIntview();
-
         new Thread(EditDocumentActivity.this::cratePdfFile).start();
-
-//        Bitmap bm = bitmap;
-//        Bitmap bm  = ((BitmapDrawable) binding.image.getDrawable()).getBitmap();;
-
-//        File folderFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name));
-//        if (!folderFile.exists())
-//            folderFile.mkdir();
-//
-//        String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-//        String imageName = "Document " + timeStamp + ".png";
-//        File pictureFile = new File(folderFile.getPath() + "/" + imageName);
-//        if (bitmap != null) {
-//            FileOutputStream out = null;
-//            try {
-//                out = new FileOutputStream(pictureFile.getPath());
-//
-//                //write the compressed bitmap at the destination specified by filename.
-//                bitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-//
-//                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-//                Uri contentUri = Uri.fromFile(pictureFile);
-//                mediaScanIntent.setData(contentUri);
-//                sendBroadcast(mediaScanIntent);
-//
-//                MediaScannerConnection.scanFile(EditDocumentActivity.this, new String[]{pictureFile.getPath()}, null, new MediaScannerConnection.OnScanCompletedListener() {
-//                    public void onScanCompleted(String path, Uri uri) {
-//                        // Log.i("ExternalStorage", "Scanned " + path + ":" + uri);
-//                    }
-//                });
-//                return pictureFile.getPath();
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                Log.e("error", "Message: " + e.getMessage());
-//            }
-//        }
-//        return null;
-
     }
 
-
     public void cratePdfFile() {
-
         String mPassword;
         String mQualityString;
         int mBorderWidth;
@@ -413,38 +255,31 @@ public class EditDocumentActivity extends AppCompatActivity {
         int mMarginBottom;
         int mMarginRight;
         int mMarginLeft;
-        String mImageScaleType;
-        String mPageNumStyle;
         String mMasterPwd;
         int mPageColor;
 
-
         mPassword = mPdfOptions.getPassword();
         mQualityString = mPdfOptions.getQualityString();
-//        mOnPDFCreatedInterface = onPDFCreated;
         mPageSize = mPdfOptions.getPageSize();
         mPasswordProtected = mPdfOptions.isPasswordProtected();
         mBorderWidth = mPdfOptions.getBorderWidth();
-//        mWatermark = mPdfOptions.getWatermark();
         mMarginTop = mPdfOptions.getMarginTop();
         mMarginBottom = mPdfOptions.getMarginBottom();
         mMarginRight = mPdfOptions.getMarginRight();
         mMarginLeft = mPdfOptions.getMarginLeft();
-        mImageScaleType = mPdfOptions.getImageScaleType();
-        mPageNumStyle = mPdfOptions.getPageNumStyle();
         mMasterPwd = mPdfOptions.getMasterPwd();
         mPageColor = mPdfOptions.getPageColor();
 
+        File sd = getCacheDir();
+        File rootfolder = new File(sd, "/" + getString(R.string.app_name));
+        if (!rootfolder.isDirectory()) {
+            rootfolder.mkdir();
+        }
 
-        File folderFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name));
-        if (!folderFile.exists())
-            folderFile.mkdir();
-
-        File dirFile = new File(folderFile.getPath() + "/" + Constant.hiddenImagePath);
-        if (!dirFile.exists())
-            dirFile.mkdir();
-
-//        String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+        File subfolder = new File(sd, "/" + getString(R.string.app_name) + "/" + Constant.hiddenImagePath);
+        if (!subfolder.isDirectory()){
+            subfolder.mkdir();
+        }
 
         if (isAlredyExit) {
             Utils.deleteFiles(new File(filePath), EditDocumentActivity.this);
@@ -461,14 +296,13 @@ public class EditDocumentActivity extends AppCompatActivity {
         if (isAlredyExit) {
             mPath = filePath;
         } else {
-            mPath = folderFile.getPath() + "/" + pdfName;
+            mPath = rootfolder.getAbsolutePath() + "/" + pdfName;
         }
 
         String pdfpath = mPath;
         mSuccess = true;
 
-
-        File pictureFile = new File(dirFile.getPath() + "/" + imageName);
+        File pictureFile = new File(subfolder.getAbsoluteFile() + "/" + imageName);
         if (bitmap != null) {
             FileOutputStream out = null;
             try {
@@ -488,7 +322,6 @@ public class EditDocumentActivity extends AppCompatActivity {
                     }
                 });
                 mSuccess = true;
-//                return pictureFile.getPath();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -498,7 +331,6 @@ public class EditDocumentActivity extends AppCompatActivity {
         } else {
             mSuccess = false;
         }
-
 
         if (mSuccess) {
             Rectangle pageSize = new Rectangle(PageSize.getRectangle(mPageSize));
@@ -515,9 +347,7 @@ public class EditDocumentActivity extends AppCompatActivity {
                     writer.setEncryption(mPassword.getBytes(), mMasterPwd.getBytes(),
                             PdfWriter.ALLOW_PRINTING | PdfWriter.ALLOW_COPY,
                             PdfWriter.ENCRYPTION_AES_128);
-
                 }
-
                 document.open();
 
                 int quality;
@@ -525,11 +355,6 @@ public class EditDocumentActivity extends AppCompatActivity {
                 if (mQualityString != null && !mQualityString.toString().trim().equals("")) {
                     quality = Integer.parseInt(mQualityString);
                 }
-
-
-//                ByteBuffer byteBuffer = ByteBuffer.allocate(size);
-//                bitmap.copyPixelsToBuffer(byteBuffer);
-//                byte[] byteArray = byteBuffer.array();
 
                 Image image = Image.getInstance(pictureFile.getPath());
                 // compressionLevel is a value between 0 (best speed) and 9 (best compression)
@@ -539,92 +364,74 @@ public class EditDocumentActivity extends AppCompatActivity {
                 image.setBorder(Rectangle.BOX);
                 image.setBorderWidth(mBorderWidth);
 
-
                 float pageWidth = document.getPageSize().getWidth() - (mMarginLeft + mMarginRight);
                 float pageHeight = document.getPageSize().getHeight() - (mMarginBottom + mMarginTop);
-//            if (mImageScaleType.equals(Constants.IMAGE_SCALE_TYPE_ASPECT_RATIO))
-//                image.scaleToFit(pageWidth, pageHeight);
-//            else
-//                image.scaleAbsolute(pageWidth, pageHeight);
 
                 image.scaleToFit(pageWidth, pageHeight);
 
                 image.setAbsolutePosition((documentRect.getWidth() - image.getScaledWidth()) / 2,
                         (documentRect.getHeight() - image.getScaledHeight()) / 2);
-
                 document.add(image);
-
-//                document.newPage();
-
                 document.close();
-
             } catch (Exception e) {
                 e.printStackTrace();
                 mSuccess = false;
             }
         }
-        if (dirFile.exists()) {
-            Utils.deleteFiles(dirFile, EditDocumentActivity.this);
+        if (subfolder.exists()) {
+            Utils.deleteFiles(subfolder, EditDocumentActivity.this);
         }
 
         boolean finalMSuccess = mSuccess;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+        runOnUiThread(() -> {
+            if (loadingDialog != null) {
+                loadingDialog.dismiss();
+            }
 
+            if (finalMSuccess) {
+                MediaScannerConnection.scanFile(EditDocumentActivity.this, new String[]{mPath}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                    public void onScanCompleted(String path, Uri uri) {
+                        // Log.i("ExternalStorage", "Scanned " + path + ":" + uri);
+                    }
+                });
 
-                if (loadingDialog != null) {
-                    loadingDialog.dismiss();
+                if (isAlredyExit) {
+                    RxBus.getInstance().post(new Update());
+                } else {
+                    RxBus.getInstance().post(new Update(mPath));
                 }
 
-                if (finalMSuccess) {
+                int counter = PreferencesManager.getInteger(EditDocumentActivity.this,Constant.EDIT_DOCUMENT);
+                PreferencesManager.saveInteger(EditDocumentActivity.this,Constant.EDIT_DOCUMENT,counter + 1);
 
-                    MediaScannerConnection.scanFile(EditDocumentActivity.this, new String[]{mPath}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                        public void onScanCompleted(String path, Uri uri) {
-                            // Log.i("ExternalStorage", "Scanned " + path + ":" + uri);
-                        }
-                    });
-
-                    if (isAlredyExit) {
-                        RxBus.getInstance().post(new Update());
-                    } else {
-                        RxBus.getInstance().post(new Update(mPath));
-                    }
-
-                    int counter = PreferencesManager.getInteger(EditDocumentActivity.this,Constant.EDIT_DOCUMENT);
-                    PreferencesManager.saveInteger(EditDocumentActivity.this,Constant.EDIT_DOCUMENT,counter + 1);
-
-                    if (!PreferencesManager.getString(EditDocumentActivity.this,Constant.INTERSTITIAL_ID).isEmpty()){
-                        if (counter == PreferencesManager.getInteger(EditDocumentActivity.this,Constant.ADS_COUNTER)){
-                            admobAdsManager.loadInterstitialAd(EditDocumentActivity.this, PreferencesManager.getString(EditDocumentActivity.this,Constant.INTERSTITIAL_ID), 1, new AdmobAdsManager.OnAdClosedListener() {
-                                @Override
-                                public void onAdClosed(Boolean isShowADs) {
-                                    Toast.makeText(EditDocumentActivity.this, "Document save successfully", Toast.LENGTH_SHORT).show();
-                                    PreferencesManager.saveInteger(EditDocumentActivity.this,Constant.EDIT_DOCUMENT,0);
-                                    setResult(RESULT_OK);
-                                    finish();
-                                }
-                            });
-                        }else {
-                            Toast.makeText(EditDocumentActivity.this, "Document save successfully", Toast.LENGTH_SHORT).show();
-                            setResult(RESULT_OK);
-                            finish();
-                        }
+                if (!PreferencesManager.getString(EditDocumentActivity.this,Constant.INTERSTITIAL_ID).isEmpty()){
+                    if (counter == PreferencesManager.getInteger(EditDocumentActivity.this,Constant.ADS_COUNTER)){
+                        admobAdsManager.loadInterstitialAd(EditDocumentActivity.this, PreferencesManager.getString(EditDocumentActivity.this,Constant.INTERSTITIAL_ID), 1, new AdmobAdsManager.OnAdClosedListener() {
+                            @Override
+                            public void onAdClosed(Boolean isShowADs) {
+                                Toast.makeText(EditDocumentActivity.this, "Document save successfully", Toast.LENGTH_SHORT).show();
+                                PreferencesManager.saveInteger(EditDocumentActivity.this,Constant.EDIT_DOCUMENT,0);
+                                setResult(RESULT_OK);
+                                finish();
+                            }
+                        });
                     }else {
-                        Utils.getAdsIds(EditDocumentActivity.this);
                         Toast.makeText(EditDocumentActivity.this, "Document save successfully", Toast.LENGTH_SHORT).show();
                         setResult(RESULT_OK);
                         finish();
                     }
-
-                } else {
-                    Toast.makeText(EditDocumentActivity.this, "error", Toast.LENGTH_SHORT).show();
+                }else {
+                    Utils.getAdsIds(EditDocumentActivity.this);
+                    Toast.makeText(EditDocumentActivity.this, "Document save successfully", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK);
+                    finish();
                 }
+
+            } else {
+                Toast.makeText(EditDocumentActivity.this, "error", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
-
 
     private BaseColor getBaseColor(int color) {
         return new BaseColor(
@@ -633,5 +440,4 @@ public class EditDocumentActivity extends AppCompatActivity {
                 Color.blue(color)
         );
     }
-
 }

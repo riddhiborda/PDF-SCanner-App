@@ -10,6 +10,7 @@ import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -46,6 +47,7 @@ import com.pdfscanner.pdf.scanpdf.model.PDFModel;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import io.reactivex.Observable;
 import rx.Subscription;
@@ -81,7 +83,6 @@ public class DocumentActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-
         getDocData();
     }
 
@@ -162,18 +163,15 @@ public class DocumentActivity extends AppCompatActivity {
                     pos = position;
                 }
             });
-
         } else {
             binding.recyclerView.setVisibility(View.GONE);
             binding.loutNoData.setVisibility(View.VISIBLE);
         }
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (resultCode == RESULT_OK && requestCode == 101) {
             RxBus.getInstance().post(new UpdateDelete(docList.get(pos).getFilePath()));
             docList.remove(pos);
@@ -191,94 +189,65 @@ public class DocumentActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("CheckResult")
     public void getDocData() {
         binding.progressBar.setVisibility(View.VISIBLE);
         Observable.fromCallable(() -> {
-            docList = getList();
+            getList();
             return true;
         }).subscribeOn(io.reactivex.schedulers.Schedulers.io())
-                .doOnError(throwable -> {
-                    runOnUiThread(() -> {
-                        binding.progressBar.setVisibility(View.GONE);
-                        setAdapter();
-                        loadbanner();
-                    });
-                })
-                .subscribe((result) -> {
-                    runOnUiThread(() -> {
-                        binding.progressBar.setVisibility(View.GONE);
-                        setAdapter();
-                        loadbanner();
-                    });
-                });
+                .doOnError(throwable -> runOnUiThread(() -> {
+                    binding.progressBar.setVisibility(View.GONE);
+                    setAdapter();
+                    loadbanner();
+                }))
+                .subscribe((result) -> runOnUiThread(() -> {
+                    binding.progressBar.setVisibility(View.GONE);
+                    setAdapter();
+                    loadbanner();
+                }));
     }
 
-
     public ArrayList<PDFModel> getList() {
-
         ArrayList<PDFModel> list = new ArrayList<>();
 
-        Cursor mCursor = null;
-
-        String sortOrder = "LOWER(" + MediaStore.Files.FileColumns.DATE_MODIFIED + ") DESC"; // unordered
-
-        final String[] projection = {MediaStore.Files.FileColumns.DATA,
-                MediaStore.Files.FileColumns.TITLE,
-                MediaStore.Files.FileColumns.SIZE,
-                MediaStore.Files.FileColumns.BUCKET_DISPLAY_NAME};
-
-//        String[] projection = {MediaStore.Images.Media.DATA/*, MediaStore.Images.Media.TITLE*/
-//                , MediaStore.MediaColumns.DATE_MODIFIED
-//                , MediaStore.MediaColumns.DISPLAY_NAME
-//                , MediaStore.Images.Media.BUCKET_DISPLAY_NAME
-//                , MediaStore.MediaColumns.SIZE
-//                //*MediaStore.Images.Media.BUCKET_DISPLAY_NAME
-//                // , MediaStore.Images.Media.LATITUDE, MediaStore.Images.Media.LONGITUDE, MediaStore.Images.Media._ID
-//        };
-
-
-        mCursor = getContentResolver().query(
-                MediaStore.Files.getContentUri("external"),
-                projection, // Projection
-                null,
-                null,
-                sortOrder);
-
-        if (mCursor != null) {
-
-            mCursor.moveToFirst();
-
-            for (mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor.moveToNext()) {
-                long size = mCursor.getLong(mCursor.getColumnIndex(MediaStore.Files.FileColumns.SIZE));
-                if (size != 0) {
-
-                    String bucketName = mCursor.getString(mCursor.getColumnIndex(MediaStore.Files.FileColumns.BUCKET_DISPLAY_NAME));
-
-                    if (bucketName != null && bucketName.equalsIgnoreCase(getString(R.string.app_name))) {
-
-                        String path = mCursor.getString(mCursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
-                        if (path != null && contains(types, path)) {
-                            if (!Utils.isPDFEncrypted(path)) {
-
-                                String title = mCursor.getString(mCursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE));
-
-                                PDFModel model = new PDFModel();
-                                model.setFilePath(path);
-                                model.setFileName(title);
-                                model.setSize(size);
-
-                                list.add(model);
-
-                            }
-                        }
-                    }
-
-                }
-
-            }
-
-            mCursor.close();
+        File sd = getCacheDir();
+        File subfolder = new File(sd, "/" + getString(R.string.app_name));
+        if (!subfolder.isDirectory()) {
+            subfolder.mkdir();
         }
+
+        getAllData(subfolder);
+
+        return list;
+    }
+
+    private ArrayList<PDFModel> getAllData(File dir){
+        ArrayList<PDFModel> list = new ArrayList<>();
+
+        File[] files = dir.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()){
+                getAllData(file);
+            }else {
+                if (file.isFile() && file.getName().endsWith(".pdf")) {
+                    Log.e("TAG", "getList: " + file.getAbsolutePath());
+                    PDFModel model = new PDFModel();
+                    model.setFilePath(file.getAbsolutePath());
+                    model.setFileName(file.getName());
+                    model.setSize(file.length());
+                    list.add(model);
+                }
+            }
+        }
+
+        Collections.sort(list, (p1, p2) -> {
+            long date1 = new File(p1.getFilePath()).lastModified();
+            long date2 = new File(p2.getFilePath()).lastModified();
+            return Utils.getData(date1).after(Utils.getData(date2)) ? -1 : 1;
+        });
+
+        docList.addAll(list);
 
         return list;
     }
@@ -292,9 +261,7 @@ public class DocumentActivity extends AppCompatActivity {
         return false;
     }
 
-
     public void deleteDialog() {
-
         File file = new File(docList.get(pos).getFilePath());
 
         AlertDialog.Builder builder = new AlertDialog.Builder(DocumentActivity.this);
@@ -321,17 +288,12 @@ public class DocumentActivity extends AppCompatActivity {
                 }
 
                 if (docList != null && docList.size() != 0) {
-
                     binding.loutNoData.setVisibility(View.GONE);
                     binding.recyclerView.setVisibility(View.VISIBLE);
-
                 } else {
-
                     binding.recyclerView.setVisibility(View.GONE);
                     binding.loutNoData.setVisibility(View.VISIBLE);
-
                 }
-
             }
         });
 
@@ -339,34 +301,27 @@ public class DocumentActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-
             }
         });
 
         builder.show();
-
     }
 
     public void recentUpdate() {
-
         Subscription subscription = RxBus.getInstance().toObservable(Update.class).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).distinctUntilChanged().subscribe(new Action1<Update>() {
                     @Override
                     public void call(Update event) {
                         if (event.getFilePath() != null && !event.equals("")) {
-
                             File file = new File(event.getFilePath());
                             if (file.exists()) {
-
                                 if (contains(types, file.getPath())) {
-
                                     PDFModel model = new PDFModel();
                                     model.setFilePath(file.getPath());
                                     model.setFileName(file.getName());
                                     model.setSize(file.length());
 
                                     docList.add(0, model);
-
 
                                     if (docList != null && docList.size() != 0) {
                                         binding.recyclerView.setVisibility(View.VISIBLE);
@@ -377,15 +332,11 @@ public class DocumentActivity extends AppCompatActivity {
                                     }
 
                                     if (adapter != null) {
-//                                        adapter.notifyDataSetChanged();
                                         adapter.notifyItemInserted(0);
                                     }
                                 }
-
                             }
-
                         } else {
-
                             if (docList != null && docList.size() != 0) {
                                 binding.recyclerView.setVisibility(View.VISIBLE);
                                 binding.loutNoData.setVisibility(View.GONE);
@@ -399,21 +350,15 @@ public class DocumentActivity extends AppCompatActivity {
                             } else {
                                 setAdapter();
                             }
-
                         }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                    }
+                }, throwable -> {
                 });
         RxBus.getInstance().addSubscription(this, subscription);
     }
 
     public void renameDialog() {
-
         File file = new File(docList.get(pos).getFilePath());
-
         Dialog dialog = new Dialog(this, R.style.WideDialog);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(true);
@@ -422,77 +367,53 @@ public class DocumentActivity extends AppCompatActivity {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.getWindow().setGravity(Gravity.CENTER);
 
-
         AppCompatEditText edtFileName;
         LinearLayout btn_cancel, btn_ok;
         edtFileName = dialog.findViewById(R.id.edt_file_name);
         btn_cancel = dialog.findViewById(R.id.btn_cancel);
         btn_ok = dialog.findViewById(R.id.btn_ok);
 
-        String currentString1 = file.getName().toString();
+        String currentString1 = file.getName();
         String[] separated1 = currentString1.split("\\.");
         String type = separated1[separated1.length - 1];
 
         String strname = currentString1.replace("." + type, "");
 
-
         edtFileName.setText(strname);
 
-        btn_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+        btn_cancel.setOnClickListener(view -> dialog.dismiss());
 
-
-        btn_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String mimeType = Utils.getFilenameExtension(file.getName());
-
-                if (!edtFileName.getText().toString().isEmpty()) {
-                    if (edtFileName.getText().toString().equalsIgnoreCase(file.getName())) {
-                        dialog.show();
-                    } else if (!file.isDirectory()) {
-//                        String currentString = edtFileName.getText().toString();
-//                        String[] separated = currentString.split("\\.");
-//                        String type = separated[separated.length - 1];
-
-                        // set rename
-                        Log.e("", "rename");
-                        dialog.dismiss();
-                        reNameFile(file, edtFileName.getText().toString() + "." + type);
-
-
-                    } else {
-                        // set rename
-                        dialog.dismiss();
-                        reNameFile(file, edtFileName.getText().toString() + "." + type);
-                    }
+        btn_ok.setOnClickListener(view -> {
+            String mimeType = Utils.getFilenameExtension(file.getName());
+            if (!edtFileName.getText().toString().isEmpty()) {
+                if (edtFileName.getText().toString().equalsIgnoreCase(file.getName())) {
+                    dialog.show();
+                } else if (!file.isDirectory()) {
+                    // set rename
+                    Log.e("", "rename");
+                    dialog.dismiss();
+                    reNameFile(file, edtFileName.getText().toString() + "." + type);
 
                 } else {
-
-                    Toast.makeText(DocumentActivity.this, "New name can't be empty.", Toast.LENGTH_SHORT).show();
+                    // set rename
+                    dialog.dismiss();
+                    reNameFile(file, edtFileName.getText().toString() + "." + type);
                 }
+
+            } else {
+                Toast.makeText(DocumentActivity.this, "New name can't be empty.", Toast.LENGTH_SHORT).show();
             }
         });
-
         dialog.show();
-
     }
 
     private void reNameFile(File file, String newName) {
-
-
         File file2 = new File(file.getParent() + "/" + newName);
         if (file2.exists()) {
             Log.e("rename", "File already exists!");
             showRenameValidationDialog();
         } else {
-
             String oldFile = file.getPath();
-
 
             boolean renamed = false;
             renamed = file.renameTo(file2);
@@ -504,8 +425,8 @@ public class DocumentActivity extends AppCompatActivity {
                         // Log.i("ExternalStorage", "Scanned " + path + ":" + uri);
                     }
                 });
-                RxBus.getInstance().post(new RenameUpdate(oldFile, file2.getPath()));
 
+                RxBus.getInstance().post(new RenameUpdate(oldFile, file2.getPath()));
                 docList.get(pos).setFilePath(file2.getPath());
                 docList.get(pos).setFileName(file2.getName());
                 adapter.notifyItemChanged(pos);
@@ -537,5 +458,4 @@ public class DocumentActivity extends AppCompatActivity {
 
         validationDialog.show();
     }
-
 }

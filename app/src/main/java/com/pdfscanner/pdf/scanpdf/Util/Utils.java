@@ -21,11 +21,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.itextpdf.text.pdf.PdfReader;
 import com.pdfscanner.pdf.scanpdf.R;
+import com.pdfscanner.pdf.scanpdf.model.PDFModel;
 import com.pdfscanner.pdf.scanpdf.ui.SettingActivity;
 import com.pdfscanner.pdf.scanpdf.ui.SplashActivity;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 
 public class Utils {
 
@@ -152,4 +158,55 @@ public class Utils {
             }
         });
     }
+
+    public static Date getData(Long date){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm aa");
+        SimpleDateFormat dSdf = new SimpleDateFormat("dd/MM/yyyy hh:mm aa");
+
+        String strDate = sdf.format(date);
+        try {
+            return dSdf.parse(strDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /*public static ArrayList<PDFModel> getAllData(File dir){
+        ArrayList<PDFModel> list = new ArrayList<>();
+
+        File[] files = dir.listFiles();
+
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isDirectory()){
+                getAllData(files[i]);
+            }else {
+                if (files[i].isFile() && files[i].getName().endsWith(".pdf")) {
+                    Log.e("TAG", "getList: " + files[i].getAbsolutePath());
+                    PDFModel model = new PDFModel();
+                    model.setFilePath(files[i].getAbsolutePath());
+                    model.setFileName(files[i].getName());
+                    model.setSize(files[i].length());
+                    list.add(model);
+                }
+            }
+        }
+
+        *//*for (File file : files) {
+            if (file.isDirectory()){
+                getAllData(file);
+            }else {
+                if (file.isFile() && file.getName().endsWith(".pdf")) {
+                    Log.e("TAG", "getList: " + file.getAbsolutePath());
+                    PDFModel model = new PDFModel();
+                    model.setFilePath(file.getAbsolutePath());
+                    model.setFileName(file.getName());
+                    model.setSize(file.length());
+                    list.add(model);
+                }
+            }
+        }*//*
+
+        return list;
+    }*/
 }

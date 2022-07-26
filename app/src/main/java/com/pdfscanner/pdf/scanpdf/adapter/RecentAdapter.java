@@ -32,7 +32,6 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.ViewHolder
     public RecentAdapter(Context context, ArrayList<PDFModel> list) {
         this.context = context;
         this.list = list;
-
     }
 
     public void setData(ArrayList<PDFModel> arrayList) {
@@ -45,7 +44,6 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_recent, parent, false);
-
         return new ViewHolder(v);
     }
 
@@ -53,8 +51,6 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         Glide.with(context).load(Utils.getImageFromPdf(context, list.get(holder.getAdapterPosition()).getFilePath()))
-//                .apply(new RequestOptions().centerCrop())
-//                .placeholder(ContextCompat.getDrawable(context, R.drawable.ic_image_placeholder))
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
                 .into(holder.image);
@@ -62,12 +58,9 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.ViewHolder
         holder.txt_name.setText(list.get(holder.getAdapterPosition()).getFileName());
 
         File file = new File(list.get(holder.getAdapterPosition()).getFilePath());
-
         SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
         String strDate = sdf.format(file.lastModified());
-
         holder.txt_date.setText(strDate);
-
     }
 
 
@@ -87,7 +80,6 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ImageView image;
-        LinearLayout row;
         TextView txt_name, txt_date;
 
         public ViewHolder(@NonNull View itemView) {
@@ -96,7 +88,6 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.ViewHolder
             txt_name = itemView.findViewById(R.id.txt_name);
             txt_date = itemView.findViewById(R.id.txt_date);
             itemView.setOnClickListener(this);
-
         }
 
         @Override

@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
@@ -26,6 +27,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -56,6 +58,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 
 import io.reactivex.Observable;
@@ -73,11 +77,9 @@ public class MainActivity extends AppCompatActivity {
     public static String mCurrentPhotoPath;
     RecentAdapter adapter;
     ArrayList<PDFModel> recentList = new ArrayList<>();
-
     public static String type;
     public static int imageCount = 1;
     AdmobAdsManager admobAdsManager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,12 +122,7 @@ public class MainActivity extends AppCompatActivity {
         ImageView btn_later = rateUsDialog.findViewById(R.id.btn_later);
 
         RotationRatingBar rotationRatingBar = rateUsDialog.findViewById(R.id.rotationratingbar_main);
-        rotationRatingBar.setOnRatingChangeListener(new BaseRatingBar.OnRatingChangeListener() {
-            @Override
-            public void onRatingChange(BaseRatingBar ratingBar, float rating, boolean fromUser) {
-                rating_count = rating;
-            }
-        });
+        rotationRatingBar.setOnRatingChangeListener((ratingBar, rating, fromUser) -> rating_count = rating);
 
         btn_later.setOnClickListener(v -> {
             rateUsDialog.dismiss();
@@ -176,137 +173,67 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setMessage("Are you sure to Exit app??");
         builder.setCancelable(false);
-        builder.setPositiveButton(Html.fromHtml("<font color='#218dff'>Yes</font>") , new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int which) {
-
-                dialogInterface.dismiss();
-                Constant.hideOpenAd();
-                finish();
-            }
+        builder.setPositiveButton(Html.fromHtml("<font color='#218dff'>Yes</font>") , (dialogInterface, which) -> {
+            dialogInterface.dismiss();
+            Constant.hideOpenAd();
+            finish();
         });
 
-        builder.setNegativeButton(Html.fromHtml("<font color='#218dff'>No</font>") , new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-
-            }
-        });
+        builder.setNegativeButton(Html.fromHtml("<font color='#218dff'>No</font>") , (dialog, which) -> dialog.dismiss());
 
         builder.show();
     }
 
     public void intView() {
+        binding.ivSetting.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, SettingActivity.class)));
 
-        /*if (!PreferencesManager.getSubscription(MainActivity.this)) {
-            startActivity(new Intent(MainActivity.this, SubscriptionActivity.class).putExtra("ShowAd", true));
-        }*/
+        binding.btnDocument.setOnClickListener(v -> {
+            type = Constant.document;
+            int counter = PreferencesManager.getInteger(MainActivity.this,Constant.MAIN_ACTIVITY);
+            PreferencesManager.saveInteger(MainActivity.this,Constant.MAIN_ACTIVITY,counter + 1);
 
-        binding.ivSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                startActivity(new Intent(MainActivity.this, SettingActivity.class));
-            }
-        });
-
-        binding.btnDocument.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                type = Constant.document;
-                int counter = PreferencesManager.getInteger(MainActivity.this,Constant.MAIN_ACTIVITY);
-                PreferencesManager.saveInteger(MainActivity.this,Constant.MAIN_ACTIVITY,counter + 1);
-
-                if (!PreferencesManager.getString(MainActivity.this,Constant.INTERSTITIAL_ID).isEmpty()){
-                    if (counter == PreferencesManager.getInteger(MainActivity.this,Constant.ADS_COUNTER)){
-                        admobAdsManager.loadInterstitialAd(MainActivity.this, PreferencesManager.getString(MainActivity.this,Constant.INTERSTITIAL_ID), 3, new AdmobAdsManager.OnAdClosedListener() {
-                            @Override
-                            public void onAdClosed(Boolean isShowADs) {
-                                PreferencesManager.saveInteger(MainActivity.this,Constant.MAIN_ACTIVITY,0);
-                                getImgFromCamera();
-                            }
-                        });
-                    }else {
-                        getImgFromCamera();
-                    }
+            if (!PreferencesManager.getString(MainActivity.this,Constant.INTERSTITIAL_ID).isEmpty()){
+                if (counter == PreferencesManager.getInteger(MainActivity.this,Constant.ADS_COUNTER)){
+                    admobAdsManager.loadInterstitialAd(MainActivity.this, PreferencesManager.getString(MainActivity.this,Constant.INTERSTITIAL_ID), 3, new AdmobAdsManager.OnAdClosedListener() {
+                        @Override
+                        public void onAdClosed(Boolean isShowADs) {
+                            PreferencesManager.saveInteger(MainActivity.this,Constant.MAIN_ACTIVITY,0);
+                            getImgFromCamera();
+                        }
+                    });
                 }else {
-                    Utils.getAdsIds(MainActivity.this);
                     getImgFromCamera();
                 }
-            }
-        });
-
-        binding.btnBusinessCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                type = Constant.business;
-                imageCount = 1;
+            }else {
+                Utils.getAdsIds(MainActivity.this);
                 getImgFromCamera();
             }
         });
 
-
-        binding.btnIdCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                type = Constant.idCard;
-                imageCount = 1;
-                getImgFromCamera();
-            }
+        binding.btnBusinessCard.setOnClickListener(v -> {
+            type = Constant.business;
+            imageCount = 1;
+            getImgFromCamera();
         });
 
-        binding.btnQrCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, QrScanActivity.class));
-            }
+        binding.btnIdCard.setOnClickListener(v -> {
+            type = Constant.idCard;
+            imageCount = 1;
+            getImgFromCamera();
         });
 
-        binding.btnOcr.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                type = Constant.ocr;
-                getImgFromCamera();
-            }
+        binding.btnQrCode.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, QrScanActivity.class)));
+
+        binding.btnOcr.setOnClickListener(v -> {
+            type = Constant.ocr;
+            getImgFromCamera();
         });
 
-        binding.txtSeeMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, DocumentActivity.class));
-            }
-        });
+        binding.txtSeeMore.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, DocumentActivity.class)));
 
-        binding.btnJpgToPdf.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                if (!PreferencesManager.getSubscription(MainActivity.this))
-//                    startActivityForResult(new Intent(MainActivity.this, SubscriptionActivity.class),55);
-//                else
-//                    startActivity(new Intent(MainActivity.this, ImageToPdfActivity.class));
-                startActivity(new Intent(MainActivity.this, ImageToPdfActivity.class));
-            }
-        });
-
-        /*binding.ivPremium.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, SubscriptionActivity.class));
-            }
-        });*/
-
-//        if (PreferencesManager.getSubscription(MainActivity.this)) {
-//            binding.ivPremium.setVisibility(View.GONE);
-//        } else {
-//            binding.ivPremium.setVisibility(View.VISIBLE);
-//        }
-
+        binding.btnJpgToPdf.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ImageToPdfActivity.class)));
         intAdapter();
-
-
         getRecentData();
-
     }
 
     public void intAdapter() {
@@ -315,46 +242,21 @@ public class MainActivity extends AppCompatActivity {
         binding.recyclerView.setLayoutManager(gridLayoutManager);
         binding.recyclerView.setAdapter(adapter);
 
-        adapter.setOnItemClickListener(new RecentAdapter.ClickListener() {
-            @Override
-            public void onItemClick(int position, View v) {
-                pos = position;
-                startActivityForResult(new Intent(MainActivity.this, ImageShowActivity.class)
-                        .putExtra("filePath", recentList.get(position).getFilePath()), 101);
-
-            }
+        adapter.setOnItemClickListener((position, v) -> {
+            pos = position;
+            startActivityForResult(new Intent(MainActivity.this, ImageShowActivity.class)
+                    .putExtra("filePath", recentList.get(position).getFilePath()), 101);
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        if (PreferencesManager.getSubscription(MainActivity.this)) {
-//            binding.ivPremium.setVisibility(View.GONE);
-//        } else {
-//            binding.ivPremium.setVisibility(View.VISIBLE);
-//        }
-    }
-
+    @SuppressLint("CheckResult")
     public void getRecentData() {
         Observable.fromCallable(() -> {
             getRecentList();
             return true;
         }).subscribeOn(io.reactivex.schedulers.Schedulers.io())
-                .doOnError(throwable -> {
-                    runOnUiThread(() -> {
-//                        binding.progressBar.setVisibility(View.GONE);
-                        setAdapter();
-
-                    });
-                })
-                .subscribe((result) -> {
-                    runOnUiThread(() -> {
-//                        binding.progressBar.setVisibility(View.GONE);
-                        setAdapter();
-                    });
-                });
-
+                .doOnError(throwable -> runOnUiThread(this::setAdapter))
+                .subscribe((result) -> runOnUiThread(this::setAdapter));
     }
 
     int pos = -1;
@@ -363,39 +265,24 @@ public class MainActivity extends AppCompatActivity {
         if (recentList != null && recentList.size() != 0) {
             binding.recyclerView.setVisibility(View.VISIBLE);
             binding.loutRecent.setVisibility(View.VISIBLE);
-
         } else {
             binding.recyclerView.setVisibility(View.GONE);
             binding.loutRecent.setVisibility(View.GONE);
         }
-
         if (adapter == null) {
             intAdapter();
         }
-
     }
-
-//    @Override
-//    protected void onSaveInstanceState(@NonNull @org.jetbrains.annotations.NotNull Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//        outState.putBundle("type",type);
-//        outState.putBundle("path",mCurrentPhotoPath);
-//    }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 2) {
             if (resultCode == RESULT_OK) {
-
                 try {
-
-
                     if (mCurrentPhotoPath != null && !mCurrentPhotoPath.equalsIgnoreCase("")) {
-
                         File file = new File(mCurrentPhotoPath);
                         String path = file.getAbsolutePath();
                         if (file.exists()) {
-
                             MediaScannerConnection.scanFile(MainActivity.this, new String[]{file.getPath()}, null, new MediaScannerConnection.OnScanCompletedListener() {
                                 public void onScanCompleted(String path, Uri uri) {
                                     // Log.i("ExternalStorage", "Scanned " + path + ":" + uri);
@@ -411,22 +298,18 @@ public class MainActivity extends AppCompatActivity {
                             boolean isDefault = false;
                             Bitmap rotatedBitmap = null;
                             switch (orientation) {
-
                                 case ExifInterface.ORIENTATION_ROTATE_90:
                                     isDefault = true;
                                     rotatedBitmap = rotateImage(bitmap, 90);
                                     break;
-
                                 case ExifInterface.ORIENTATION_ROTATE_180:
                                     isDefault = true;
                                     rotatedBitmap = rotateImage(bitmap, 180);
                                     break;
-
                                 case ExifInterface.ORIENTATION_ROTATE_270:
                                     isDefault = true;
                                     rotatedBitmap = rotateImage(bitmap, 270);
                                     break;
-
                                 case ExifInterface.ORIENTATION_NORMAL:
                                 default:
                                     isDefault = false;
@@ -434,10 +317,8 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                             if (isDefault) {
-
                                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
                                 String imageFileName = "JPEG_" + timeStamp + "_";
-
 
                                 File storageDir = getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
 
@@ -482,32 +363,23 @@ public class MainActivity extends AppCompatActivity {
                                             // Log.i("ExternalStorage", "Scanned " + path + ":" + uri);
                                         }
                                     });
-
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-
                             }
-
                         }
                     }
 
                     if (type.equalsIgnoreCase(Constant.document) || type.equalsIgnoreCase(Constant.ocr)) {
-
                         startActivity(new Intent(MainActivity.this, EditScanActivity.class).putExtra("file", mCurrentPhotoPath).putExtra("type", type));
-
-
                     } else if (type.equalsIgnoreCase(Constant.business) || type.equalsIgnoreCase(Constant.idCard)) {
 
                         startActivityForResult(new Intent(MainActivity.this, EditScanActivity.class)
                                 .putExtra("imageCount", imageCount).putExtra("file", mCurrentPhotoPath).putExtra("type", type), 102);
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-
             } else {
                 new Handler(Looper.myLooper()).postDelayed(new Runnable() {
                     @Override
@@ -520,10 +392,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == 102) {
             if (resultCode == RESULT_OK ) {
-
                 imageCount++;
                 getImgFromCamera();
-
             } else {
                 new Handler(Looper.myLooper()).postDelayed(new Runnable() {
                     @Override
@@ -534,9 +404,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         if (resultCode == RESULT_OK && requestCode == 101) {
-
             recentList.remove(pos);
-
             if (adapter != null) {
                 adapter.notifyDataSetChanged();
             }
@@ -547,7 +415,6 @@ public class MainActivity extends AppCompatActivity {
                 binding.recyclerView.setVisibility(View.GONE);
                 binding.loutRecent.setVisibility(View.GONE);
             }
-
         }
 
         if (resultCode == RESULT_OK && requestCode == 55) {
@@ -562,24 +429,19 @@ public class MainActivity extends AppCompatActivity {
                 matrix, true);
     }
 
-
     private void getImgFromCamera() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
         File file = null;
         try {
             Constant.hideOpenAd();
             file = createImageFile();
             Uri mUri = FileProvider.getUriForFile(MainActivity.this, getPackageName() + ".provider", file);
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
-
             startActivityForResult(cameraIntent, 2);
-
         } catch (IOException e) {
             e.printStackTrace();
             Constant.showOpenAd();
         }
-
     }
 
     private File createImageFile() throws IOException {
@@ -601,96 +463,45 @@ public class MainActivity extends AppCompatActivity {
     String[] types = new String[]{".pdf"};
 
     public ArrayList<PDFModel> getRecentList() {
-
         ArrayList<PDFModel> list = new ArrayList<>();
 
-        Cursor mCursor = null;
-        String sortOrder = "LOWER(" + MediaStore.Files.FileColumns.DATE_MODIFIED + ") DESC"; // unordered
-
-        final String[] projection = {MediaStore.Files.FileColumns.DATA,
-                MediaStore.Files.FileColumns.TITLE,
-                MediaStore.Files.FileColumns.SIZE, MediaStore.Files.FileColumns.MIME_TYPE,
-                MediaStore.Files.FileColumns.BUCKET_DISPLAY_NAME};
-
-//        String[] projection = {MediaStore.Images.Media.DATA
-//                , MediaStore.MediaColumns.DATE_MODIFIED
-//                , MediaStore.MediaColumns.DISPLAY_NAME
-//                , MediaStore.Images.Media.BUCKET_DISPLAY_NAME
-//                , MediaStore.MediaColumns.SIZE
-//        };
-
-        Uri uri;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            uri = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL);
-        } else
-            uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-
-        mCursor = getContentResolver().query(
-                MediaStore.Files.getContentUri("external"),
-                projection, // Projection
-                null,
-                null,
-                sortOrder);
-
-        if (mCursor != null) {
-
-            mCursor.moveToFirst();
-
-            String strFolderName = getString(R.string.app_name);
-
-            for (mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor.moveToNext()) {
-                long size = mCursor.getLong(mCursor.getColumnIndex(MediaStore.Files.FileColumns.SIZE));
-                if (size != 0) {
-
-                    String bucketName = mCursor.getString(mCursor.getColumnIndex(MediaStore.Files.FileColumns.BUCKET_DISPLAY_NAME));
-
-                    if (bucketName != null && bucketName.equalsIgnoreCase(getString(R.string.app_name))) {
-
-                        String path = mCursor.getString(mCursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
-                        if (path != null && contains(types, path)) {
-                            if (!Utils.isPDFEncrypted(path)) {
-
-                                String title = mCursor.getString(mCursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE));
-
-                                PDFModel model = new PDFModel();
-                                model.setFilePath(path);
-                                model.setFileName(title);
-                                model.setSize(size);
-
-                                recentList.add(model);
-
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-
-                                        if (adapter != null) {
-                                            adapter.notifyItemInserted(recentList.size());
-
-                                            if (recentList != null && recentList.size() != 0) {
-                                                binding.recyclerView.setVisibility(View.VISIBLE);
-                                                binding.loutRecent.setVisibility(View.VISIBLE);
-
-                                            } else {
-                                                binding.recyclerView.setVisibility(View.GONE);
-                                                binding.loutRecent.setVisibility(View.GONE);
-                                            }
-                                        }
-
-                                    }
-                                });
-
-                            }
-                        }
-
-                    }
-
-                }
-
-            }
-
-            mCursor.close();
+        File sd = getCacheDir();
+        File subfolder = new File(sd, "/" + getString(R.string.app_name));
+        if (!subfolder.isDirectory()) {
+            subfolder.mkdir();
         }
+
+        getAllData(subfolder);
+
+        return list;
+    }
+
+    private ArrayList<PDFModel> getAllData(File dir){
+        ArrayList<PDFModel> list = new ArrayList<>();
+
+        File[] files = dir.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()){
+                getAllData(file);
+            }else {
+                if (file.isFile() && file.getName().endsWith(".pdf")) {
+                    Log.e("TAG", "getList: " + file.getAbsolutePath());
+                    PDFModel model = new PDFModel();
+                    model.setFilePath(file.getAbsolutePath());
+                    model.setFileName(file.getName());
+                    model.setSize(file.length());
+                    list.add(model);
+                }
+            }
+        }
+
+        Collections.sort(list, (p1, p2) -> {
+            long date1 = new File(p1.getFilePath()).lastModified();
+            long date2 = new File(p2.getFilePath()).lastModified();
+            return Utils.getData(date1).after(Utils.getData(date2)) ? -1 : 1;
+        });
+
+        recentList.addAll(list);
 
         return list;
     }
@@ -704,41 +515,26 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-
     public void recentRenameUpdate() {
-
         Subscription subscription = RxBus.getInstance().toObservable(RenameUpdate.class).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).distinctUntilChanged().subscribe(new Action1<RenameUpdate>() {
-                    @Override
-                    public void call(RenameUpdate event) {
-                        if (event.getOldFile() != null && !event.getOldFile().equals("") && event.getRenameFile() != null && !event.getRenameFile().equals("")) {
+                .observeOn(AndroidSchedulers.mainThread()).distinctUntilChanged().subscribe(event -> {
+                    if (event.getOldFile() != null && !event.getOldFile().equals("") && event.getRenameFile() != null && !event.getRenameFile().equals("")) {
+                        if (recentList != null && recentList.size() != 0) {
+                            for (int k = 0; k < recentList.size(); k++) {
+                                if (recentList.get(k).getFilePath().equalsIgnoreCase(event.getOldFile())) {
+                                    File file = new File(event.getRenameFile());
+                                    recentList.get(k).setFilePath(file.getPath());
+                                    recentList.get(k).setFileName(file.getName());
 
-                            if (recentList != null && recentList.size() != 0) {
+                                    if (adapter != null)
+                                        adapter.notifyItemChanged(k);
 
-                                for (int k = 0; k < recentList.size(); k++) {
-
-                                    if (recentList.get(k).getFilePath().equalsIgnoreCase(event.getOldFile())) {
-                                        File file = new File(event.getRenameFile());
-
-                                        recentList.get(k).setFilePath(file.getPath());
-                                        recentList.get(k).setFileName(file.getName());
-
-                                        if (adapter != null)
-                                            adapter.notifyItemChanged(k);
-
-                                        break;
-                                    }
-
-
+                                    break;
                                 }
                             }
-
                         }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                    }
+                }, throwable -> {
                 });
         RxBus.getInstance().addSubscription(this, subscription);
     }
@@ -749,17 +545,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void call(UpdateDelete event) {
                         if (event.getFilePath() != null && !event.getFilePath().equals("")) {
-
                             if (recentList != null && recentList.size() != 0) {
-
                                 for (int k = 0; k < recentList.size(); k++) {
-
                                     if (recentList.get(k).getFilePath().equalsIgnoreCase(event.getFilePath())) {
                                         recentList.remove(k);
                                         if (adapter != null)
                                             adapter.notifyItemRemoved(k);
-//                                            adapter.notifyDataSetChanged();
-//                                            adapter.notifyItemRemoved(k);
                                         break;
                                     }
                                 }
@@ -767,87 +558,61 @@ public class MainActivity extends AppCompatActivity {
 
                         }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                    }
+                }, throwable -> {
                 });
         RxBus.getInstance().addSubscription(this, subscription);
     }
 
     public void recentUpdate() {
-
         Subscription subscription = RxBus.getInstance().toObservable(Update.class).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).distinctUntilChanged().subscribe(new Action1<Update>() {
-                    @Override
-                    public void call(Update event) {
-                        if (event.getFilePath() != null && !event.equals("")) {
+                .observeOn(AndroidSchedulers.mainThread()).distinctUntilChanged().subscribe(event -> {
+                    if (event.getFilePath() != null && !event.equals("")) {
+                        File file = new File(event.getFilePath());
+                        if (file.exists()) {
 
-                            File file = new File(event.getFilePath());
-                            if (file.exists()) {
+                            if (contains(types, file.getPath())) {
 
-                                if (contains(types, file.getPath())) {
+                                PDFModel model = new PDFModel();
+                                model.setFilePath(file.getPath());
+                                model.setFileName(file.getName());
+                                model.setSize(file.length());
 
-                                    PDFModel model = new PDFModel();
-                                    model.setFilePath(file.getPath());
-                                    model.setFileName(file.getName());
-                                    model.setSize(file.length());
+                                recentList.add(0, model);
 
-                                    recentList.add(0, model);
-
-                                    if (recentList != null && recentList.size() != 0) {
-                                        binding.recyclerView.setVisibility(View.VISIBLE);
-                                        binding.loutRecent.setVisibility(View.VISIBLE);
-
-                                    } else {
-                                        binding.recyclerView.setVisibility(View.GONE);
-                                        binding.loutRecent.setVisibility(View.GONE);
-                                    }
-
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (adapter != null) {
-                                                adapter.notifyDataSetChanged();
-//                                                adapter.setData(recentList);
-//
-//                                        adapter.notifyItemInserted(0);
-                                            } else {
-                                                setAdapter();
-                                            }
-
-
-                                        }
-                                    });
-
+                                if (recentList != null && recentList.size() != 0) {
+                                    binding.recyclerView.setVisibility(View.VISIBLE);
+                                    binding.loutRecent.setVisibility(View.VISIBLE);
+                                } else {
+                                    binding.recyclerView.setVisibility(View.GONE);
+                                    binding.loutRecent.setVisibility(View.GONE);
                                 }
 
+                                runOnUiThread(() -> {
+                                    if (adapter != null) {
+                                        adapter.notifyDataSetChanged();
+                                    } else {
+                                        setAdapter();
+                                    }
+                                });
                             }
-
+                        }
+                    } else {
+                        if (recentList != null && recentList.size() != 0) {
+                            binding.recyclerView.setVisibility(View.VISIBLE);
+                            binding.loutRecent.setVisibility(View.VISIBLE);
                         } else {
+                            binding.recyclerView.setVisibility(View.GONE);
+                            binding.loutRecent.setVisibility(View.GONE);
+                        }
 
-                            if (recentList != null && recentList.size() != 0) {
-                                binding.recyclerView.setVisibility(View.VISIBLE);
-                                binding.loutRecent.setVisibility(View.VISIBLE);
-
-                            } else {
-                                binding.recyclerView.setVisibility(View.GONE);
-                                binding.loutRecent.setVisibility(View.GONE);
-                            }
-                            if (adapter != null) {
-                                adapter.notifyDataSetChanged();
-                            } else {
-                                setAdapter();
-                            }
-
+                        if (adapter != null) {
+                            adapter.notifyDataSetChanged();
+                        } else {
+                            setAdapter();
                         }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                    }
+                }, throwable -> {
                 });
         RxBus.getInstance().addSubscription(this, subscription);
     }
-
 }

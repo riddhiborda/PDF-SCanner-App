@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -46,21 +47,18 @@ import com.rajat.pdfviewer.PdfViewerActivity;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import io.reactivex.Observable;
 
 public class ImageToPdfActivity extends AppCompatActivity {
 
     ActivityImageToPdfBinding binding;
-
     ImageToPDFOptions mPdfOptions;
     private int mPageColor;
-
     ProgressDialog loadingDialog;
     File openFile = null;
-
     ArrayList<PDFModel> pdfList = new ArrayList<>();
-
     PdfAdapter adapter;
 
 
@@ -78,66 +76,39 @@ public class ImageToPdfActivity extends AppCompatActivity {
     }
 
     public void intView() {
-        binding.icBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        binding.icBack.setOnClickListener(v -> onBackPressed());
 
-        binding.btnCreatePdf.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int selectCount = mPdfOptions.getImagesUri().size();
-                if (selectCount == 0) {
-                    Toast.makeText(ImageToPdfActivity.this, "Please select images", Toast.LENGTH_SHORT).show();
-
-                } else {
-
-                    if (loadingDialog != null) {
-                        loadingDialog.setMessage("Create pdf...");
-                        loadingDialog.show();
-                    }
-//                    String timeStamp = new SimpleDateFormat("yyyyMMdd HH.mm.ss").format(new Date());
-                    String fileName = "Images_to_PDF_" + System.currentTimeMillis() + Constant.pdfExtension;
-                    mPdfOptions.setOutFileName(fileName);
-                    mPdfOptions.setQualityString(Integer.toString(100));
-                    new Thread(ImageToPdfActivity.this::cratePdfFile).start();
-                }
-            }
-        });
-
-        binding.btnSelectImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(new Intent(ImageToPdfActivity.this, ImageActivity.class), 10);
-            }
-        });
-
-        binding.btnOpenPdf.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //    openFile
-
-                if (openFile != null) {
-                    if (openFile.exists())
-                        startActivity(PdfViewerActivity.Companion.launchPdfFromPath(ImageToPdfActivity.this, openFile.getPath(), openFile.getName(),
-                                "", false, false));
+        binding.btnCreatePdf.setOnClickListener(v -> {
+            int selectCount = mPdfOptions.getImagesUri().size();
+            if (selectCount == 0) {
+                Toast.makeText(ImageToPdfActivity.this, "Please select images", Toast.LENGTH_SHORT).show();
+            } else {
+                if (loadingDialog != null) {
+                    loadingDialog.setMessage("Create pdf...");
+                    loadingDialog.show();
                 }
 
-//                Uri uri = FileProvider.getUriForFile(ImageToPdfActivity.this, getPackageName() + ".provider", openFile);
-//                Intent intent = new Intent();
-//                intent.setAction(Intent.ACTION_VIEW);
-//                intent.setDataAndType(uri, Utils.getMimeTypeFromFilePath(openFile.getPath()));
-//                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//
-//                startActivity(Intent.createChooser(intent, "Open with"));
+                String fileName = "Images_to_PDF_" + System.currentTimeMillis() + Constant.pdfExtension;
+                mPdfOptions.setOutFileName(fileName);
+                mPdfOptions.setQualityString(Integer.toString(100));
+                new Thread(ImageToPdfActivity.this::cratePdfFile).start();
+            }
+        });
+
+        binding.btnSelectImage.setOnClickListener(v -> startActivityForResult(new Intent(ImageToPdfActivity.this, ImageActivity.class), 10));
+
+        binding.btnOpenPdf.setOnClickListener(v -> {
+            //    openFile
+
+            if (openFile != null) {
+                if (openFile.exists())
+                    startActivity(PdfViewerActivity.Companion.launchPdfFromPath(ImageToPdfActivity.this, openFile.getPath(), openFile.getName(),
+                            "", false, false));
             }
         });
 
         binding.btnOpenPdf.setVisibility(View.GONE);
         binding.btnCreatePdf.setVisibility(View.VISIBLE);
-
         binding.txtImageCount.setText("0 image(s) selected.");
         setPdfIntview();
 
@@ -152,9 +123,7 @@ public class ImageToPdfActivity extends AppCompatActivity {
 
     public void setSelectText() {
         int selectCount = mPdfOptions.getImagesUri().size();
-
         binding.txtImageCount.setText(selectCount + " image(s) selected.");
-
         binding.txtSelectImage.setText("Select Images (" + selectCount + " Images)");
     }
 
@@ -177,15 +146,6 @@ public class ImageToPdfActivity extends AppCompatActivity {
                     File file = new File(pdfList.get(position).getFilePath());
                     startActivity(PdfViewerActivity.Companion.launchPdfFromPath(ImageToPdfActivity.this, file.getPath(), file.getName(),
                             "", false, false));
-
-
-//                    Uri uri = FileProvider.getUriForFile(ImageToPdfActivity.this, getPackageName() + ".provider", file);
-//                    Intent intent = new Intent();
-//                    intent.setAction(Intent.ACTION_VIEW);
-//                    intent.setDataAndType(uri, Utils.getMimeTypeFromFilePath(file.getPath()));
-//                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//
-//                    startActivity(Intent.createChooser(intent, "Open with"));
                 }
 
                 @Override
@@ -199,7 +159,6 @@ public class ImageToPdfActivity extends AppCompatActivity {
                         public void onSwipeOptionClicked(int viewID, int position) {
                             switch (viewID) {
                                 case R.id.btn_delete:
-
                                     Log.e("Swipe", "position: " + position);
                                     AlertDialog.Builder builder = new AlertDialog.Builder(ImageToPdfActivity.this);
                                     builder.setMessage("Are you sure do you want to delete it?");
@@ -255,27 +214,19 @@ public class ImageToPdfActivity extends AppCompatActivity {
                             }
                         }
                     });
-
             binding.recyclerView.addOnItemTouchListener(touchListener);
-
         } else {
             binding.recyclerView.setVisibility(View.GONE);
-
         }
-
     }
 
     public void setPdfIntview() {
-
         mPdfOptions = new ImageToPDFOptions();
-
         mPdfOptions.setBorderWidth(Constant.DEFAULT_BORDER_WIDTH);
-
         mPdfOptions.setQualityString(Integer.toString(Constant.DEFAULT_QUALITY_VALUE));
         mPdfOptions.setPageSize(Constant.DEFAULT_PAGE_SIZE);
         mPdfOptions.setPasswordProtected(false);
         mPdfOptions.setMargins(0, 0, 0, 0);
-//        mPageNumStyle =Constants.PREF_PAGE_STYLE;
         mPageColor = Color.WHITE;
 
         mPdfOptions.setPasswordProtected(false);
@@ -300,123 +251,70 @@ public class ImageToPdfActivity extends AppCompatActivity {
                 if (ImageActivity.selectPhotoList != null)
                     for (int i = 0; i < ImageActivity.selectPhotoList.size(); i++) {
                         mImagesUri.add(ImageActivity.selectPhotoList.get(i).getFilePath());
-
                     }
-
                 mPdfOptions.getImagesUri().clear();
                 mPdfOptions.setImagesUri(mImagesUri);
                 setSelectText();
-
             }
 
             if (binding.btnCreatePdf.getVisibility() == View.GONE) {
                 binding.btnCreatePdf.setVisibility(View.VISIBLE);
                 binding.btnOpenPdf.setVisibility(View.GONE);
             }
-
         }
     }
 
+    @SuppressLint("CheckResult")
     public void getPdfata() {
         binding.progressBar.setVisibility(View.VISIBLE);
         Observable.fromCallable(() -> {
             pdfList = getList();
             return true;
         }).subscribeOn(io.reactivex.schedulers.Schedulers.io())
-                .doOnError(throwable -> {
-                    runOnUiThread(() -> {
-                        binding.progressBar.setVisibility(View.GONE);
-                        setAdapter();
-
-                    });
-                })
-                .subscribe((result) -> {
-                    runOnUiThread(() -> {
-                        binding.progressBar.setVisibility(View.GONE);
-                        setAdapter();
-                    });
-                });
+                .doOnError(throwable -> runOnUiThread(() -> {
+                    binding.progressBar.setVisibility(View.GONE);
+                    setAdapter();
+                }))
+                .subscribe((result) -> runOnUiThread(() -> {
+                    binding.progressBar.setVisibility(View.GONE);
+                    setAdapter();
+                }));
 
     }
-
-    String[] types = new String[]{".pdf"};
 
     public ArrayList<PDFModel> getList() {
-
         ArrayList<PDFModel> list = new ArrayList<>();
 
-        Cursor mCursor = null;
-
-        String sortOrder = "LOWER(" + MediaStore.Files.FileColumns.DATE_MODIFIED + ") DESC"; // unordered
-
-        final String[] projection = {MediaStore.Files.FileColumns.DATA,
-                MediaStore.Files.FileColumns.TITLE,
-                MediaStore.Files.FileColumns.SIZE,
-                MediaStore.Files.FileColumns.BUCKET_DISPLAY_NAME};
-
-//        String[] projection = {MediaStore.Images.Media.DATA/*, MediaStore.Images.Media.TITLE*/
-//                , MediaStore.MediaColumns.DATE_MODIFIED
-//                , MediaStore.MediaColumns.DISPLAY_NAME
-//                , MediaStore.Images.Media.BUCKET_DISPLAY_NAME
-//                , MediaStore.MediaColumns.SIZE
-//                //*MediaStore.Images.Media.BUCKET_DISPLAY_NAME
-//                // , MediaStore.Images.Media.LATITUDE, MediaStore.Images.Media.LONGITUDE, MediaStore.Images.Media._ID
-//        };
-
-
-        mCursor = getContentResolver().query(
-                MediaStore.Files.getContentUri("external"),
-                projection, // Projection
-                null,
-                null,
-                sortOrder);
-
-        if (mCursor != null) {
-
-            mCursor.moveToFirst();
-
-            for (mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor.moveToNext()) {
-                long size = mCursor.getLong(mCursor.getColumnIndex(MediaStore.Files.FileColumns.SIZE));
-                if (size != 0) {
-
-                    String bucketName = mCursor.getString(mCursor.getColumnIndex(MediaStore.Files.FileColumns.BUCKET_DISPLAY_NAME));
-
-                    if (bucketName != null && bucketName.equalsIgnoreCase(Constant.ImageToPDFPath)) {
-
-                        String path = mCursor.getString(mCursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
-                        if (path != null && contains(types, path)) {
-                            if (!Utils.isPDFEncrypted(path)) {
-
-                                String title = mCursor.getString(mCursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE));
-
-                                PDFModel model = new PDFModel();
-                                model.setFilePath(path);
-                                model.setFileName(title);
-                                model.setSize(size);
-
-                                list.add(model);
-
-                            }
-                        }
-                    }
-
-                }
-
-            }
-
-            mCursor.close();
+        File sd = getCacheDir();
+        File rootfolder = new File(sd, "/" + getString(R.string.app_name));
+        if (!rootfolder.isDirectory()) {
+            rootfolder.mkdir();
         }
+
+        File subfolder = new File(sd, "/" + getString(R.string.app_name) + "/" + Constant.ImageToPDFPath);
+        if (!subfolder.isDirectory()){
+            subfolder.mkdir();
+        }
+
+        File[] files = subfolder.listFiles();
+        for (File file : files) {
+            if (file.isFile() && file.getName().endsWith(".pdf")) {
+                Log.e("TAG", "getList: " + file.getAbsolutePath());
+                PDFModel model = new PDFModel();
+                model.setFilePath(file.getAbsolutePath());
+                model.setFileName(file.getName());
+                model.setSize(file.length());
+                list.add(model);
+            }
+        }
+
+        Collections.sort(list, (p1, p2) -> {
+            long date1 = new File(p1.getFilePath()).lastModified();
+            long date2 = new File(p2.getFilePath()).lastModified();
+            return Utils.getData(date1).after(Utils.getData(date2)) ? -1 : 1;
+        });
 
         return list;
-    }
-
-    boolean contains(String[] types, String path) {
-        for (String string : types) {
-            if (path.endsWith(string)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public void cratePdfFile() {
@@ -425,19 +323,15 @@ public class ImageToPdfActivity extends AppCompatActivity {
         String mQualityString;
         ArrayList<String> mImagesUri;
         int mBorderWidth;
-//        OnPDFCreatedInterface mOnPDFCreatedInterface;
         boolean mSuccess;
         String mPath;
         String mPageSize;
         boolean mPasswordProtected;
-//        Boolean mWatermarkAdded;
-//        Watermark mWatermark;
         int mMarginTop;
         int mMarginBottom;
         int mMarginRight;
         int mMarginLeft;
         String mImageScaleType;
-        String mPageNumStyle;
         String mMasterPwd;
         int mPageColor;
 
@@ -445,31 +339,31 @@ public class ImageToPdfActivity extends AppCompatActivity {
         mFileName = mPdfOptions.getOutFileName();
         mPassword = mPdfOptions.getPassword();
         mQualityString = mPdfOptions.getQualityString();
-//        mOnPDFCreatedInterface = onPDFCreated;
         mPageSize = mPdfOptions.getPageSize();
         mPasswordProtected = mPdfOptions.isPasswordProtected();
         mBorderWidth = mPdfOptions.getBorderWidth();
-//        mWatermark = mPdfOptions.getWatermark();
         mMarginTop = mPdfOptions.getMarginTop();
         mMarginBottom = mPdfOptions.getMarginBottom();
         mMarginRight = mPdfOptions.getMarginRight();
         mMarginLeft = mPdfOptions.getMarginLeft();
         mImageScaleType = mPdfOptions.getImageScaleType();
-        mPageNumStyle = mPdfOptions.getPageNumStyle();
         mMasterPwd = mPdfOptions.getMasterPwd();
         mPageColor = mPdfOptions.getPageColor();
-//        mPath = mainPath;
 
-        File folderFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name));
-        if (!folderFile.exists())
-            folderFile.mkdir();
+        File sd = getCacheDir();
+        File rootfolder = new File(sd, "/" + getString(R.string.app_name));
+        if (!rootfolder.isDirectory()) {
+            rootfolder.mkdir();
+        }
 
+        File subfolder = new File(sd, "/" + getString(R.string.app_name) + "/" + Constant.ImageToPDFPath);
+        if (!subfolder.isDirectory()){
+            subfolder.mkdir();
+        }
 
-        File folder = new File(folderFile.getPath() + "/" + Constant.ImageToPDFPath);
-        if (!folder.exists())
-            folder.mkdir();
+        Log.e("TAG", "cratePdfFile: " + rootfolder.getAbsolutePath());
 
-        mPath = folder.getPath() + "/" + mFileName /*+ Constants.pdfExtension*/;
+        mPath = subfolder.getAbsolutePath() + "/" + mFileName /*+ Constants.pdfExtension*/;
 
         mSuccess = true;
 
@@ -478,41 +372,34 @@ public class ImageToPdfActivity extends AppCompatActivity {
         pageSize.setBackgroundColor(getBaseColor(mPageColor));
         Document document = new Document(pageSize,
                 mMarginLeft, mMarginRight, mMarginTop, mMarginBottom);
-        Log.v("stage 2", "Document Created");
+
+        Log.e("stage 2", "Document Created");
+
         document.setMargins(mMarginLeft, mMarginRight, mMarginTop, mMarginBottom);
         Rectangle documentRect = document.getPageSize();
 
-
         try {
-
             PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(mPath));
 
-            Log.v("Stage 3", "Pdf writer");
+            Log.e("Stage 3", "Pdf writer");
 
             if (mPasswordProtected) {
                 writer.setEncryption(mPassword.getBytes(), mMasterPwd.getBytes(),
                         PdfWriter.ALLOW_PRINTING | PdfWriter.ALLOW_COPY,
                         PdfWriter.ENCRYPTION_AES_128);
 
-                Log.v("Stage 3.1", "Set Encryption");
+                Log.e("Stage 3.1", "Set Encryption");
             }
-
-//            if (mWatermarkAdded) {
-//                WatermarkPageEvent watermarkPageEvent = new WatermarkPageEvent();
-//                watermarkPageEvent.setWatermark(mWatermark);
-//                writer.setPageEvent(watermarkPageEvent);
-//            }
 
             document.open();
 
-            Log.v("Stage 4", "Document opened");
+            Log.e("Stage 4", "Document opened");
 
             for (int i = 0; i < mImagesUri.size(); i++) {
                 int quality;
                 quality = 30;
 
-
-                if (mQualityString != null && !mQualityString.toString().trim().equals("")) {
+                if (mQualityString != null && !mQualityString.trim().equals("")) {
                     quality = Integer.parseInt(mQualityString);
                 }
                 Image image = Image.getInstance(mImagesUri.get(i));
@@ -522,15 +409,16 @@ public class ImageToPdfActivity extends AppCompatActivity {
                 image.setBorder(Rectangle.BOX);
                 image.setBorderWidth(mBorderWidth);
 
-                Log.v("Stage 5", "Image compressed " + qualityMod);
+                Log.e("Stage 5", "Image compressed " + qualityMod);
 
                 BitmapFactory.Options bmOptions = new BitmapFactory.Options();
                 Bitmap bitmap = BitmapFactory.decodeFile(mImagesUri.get(i), bmOptions);
 
-                Log.v("Stage 6", "Image path adding");
+                Log.e("Stage 6", "Image path adding");
 
                 float pageWidth = document.getPageSize().getWidth() - (mMarginLeft + mMarginRight);
                 float pageHeight = document.getPageSize().getHeight() - (mMarginBottom + mMarginTop);
+
                 if (mImageScaleType.equals(Constant.IMAGE_SCALE_TYPE_ASPECT_RATIO))
                     image.scaleToFit(pageWidth, pageHeight);
                 else
@@ -539,77 +427,62 @@ public class ImageToPdfActivity extends AppCompatActivity {
                 image.setAbsolutePosition(
                         (documentRect.getWidth() - image.getScaledWidth()) / 2,
                         (documentRect.getHeight() - image.getScaledHeight()) / 2);
-
                 document.add(image);
-
-
                 document.newPage();
             }
 
-            Log.v("Stage 8", "Image adding");
-
+            Log.e("Stage 8", "Image adding");
             document.close();
-
-            Log.v("Stage 7", "Document Closed" + mPath);
-
-            Log.v("Stage 8", "Record inserted in database");
-
+            Log.e("Stage 7", "Document Closed" + mPath);
+            Log.e("Stage 8", "Record inserted in database");
         } catch (Exception e) {
             e.printStackTrace();
             mSuccess = false;
         }
 
         boolean finalMSuccess = mSuccess;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+        runOnUiThread(() -> {
+            if (loadingDialog != null) {
+                loadingDialog.dismiss();
+            }
 
-                if (loadingDialog != null) {
-                    loadingDialog.dismiss();
-                }
-
-                if (finalMSuccess) {
-
-                    MediaScannerConnection.scanFile(ImageToPdfActivity.this, new String[]{mPath}, null, new MediaScannerConnection.OnScanCompletedListener() {
-                        public void onScanCompleted(String path, Uri uri) {
-                        }
-                    });
-
-                    Toast.makeText(ImageToPdfActivity.this, "Create pdf successfully", Toast.LENGTH_SHORT).show();
-                    openFile = new File(mPath);
-
-                    binding.btnCreatePdf.setVisibility(View.GONE);
-                    binding.btnOpenPdf.setVisibility(View.VISIBLE);
-                    binding.txtSelectImage.setText("Select Images");
-                    binding.txtImageCount.setText("No image(s) selected.");
-
-                    mPdfOptions.getImagesUri().clear();
-
-                    PDFModel model = new PDFModel();
-                    model.setFilePath(mPath);
-                    model.setFileName(openFile.getName());
-                    model.setSize(openFile.length());
-
-                    pdfList.add(0, model);
-
-
-                    if (adapter != null)
-                        adapter.setFilterlist(pdfList);
-                    else
-                        setAdapter();
-
-                    if (pdfList != null && pdfList.size() != 0) {
-                        binding.recyclerView.setVisibility(View.VISIBLE);
-                    } else {
-                        binding.recyclerView.setVisibility(View.GONE);
+            if (finalMSuccess) {
+                MediaScannerConnection.scanFile(ImageToPdfActivity.this, new String[]{mPath}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                    public void onScanCompleted(String path, Uri uri) {
                     }
+                });
 
+                Toast.makeText(ImageToPdfActivity.this, "Create pdf successfully", Toast.LENGTH_SHORT).show();
+                openFile = new File(mPath);
+
+                binding.btnCreatePdf.setVisibility(View.GONE);
+                binding.btnOpenPdf.setVisibility(View.VISIBLE);
+                binding.txtSelectImage.setText("Select Images");
+                binding.txtImageCount.setText("No image(s) selected.");
+
+                mPdfOptions.getImagesUri().clear();
+
+                PDFModel model = new PDFModel();
+                model.setFilePath(mPath);
+                model.setFileName(openFile.getName());
+                model.setSize(openFile.length());
+
+                pdfList.add(0, model);
+
+                if (adapter != null)
+                    adapter.setFilterlist(pdfList);
+                else
+                    setAdapter();
+
+                if (pdfList != null && pdfList.size() != 0) {
+                    binding.recyclerView.setVisibility(View.VISIBLE);
                 } else {
-                    Toast.makeText(ImageToPdfActivity.this, "error", Toast.LENGTH_SHORT).show();
+                    binding.recyclerView.setVisibility(View.GONE);
                 }
+            } else {
+                Toast.makeText(ImageToPdfActivity.this, "error", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
     private BaseColor getBaseColor(int color) {
