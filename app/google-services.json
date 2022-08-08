@@ -1,41 +1,33 @@
 {
   "project_info": {
-    "project_number": "945368593470",
-    "project_id": "pdf-scanner-3e3ce",
-    "storage_bucket": "pdf-scanner-3e3ce.appspot.com"
+    "project_number": "55511794609",
+    "project_id": "pdf-scanner-document-scan-ocr",
+    "storage_bucket": "pdf-scanner-document-scan-ocr.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:945368593470:android:88626dbaf87ef068f28d6f",
+        "mobilesdk_app_id": "1:55511794609:android:eeb6bbbfbe2f7ba2f27390",
         "android_client_info": {
           "package_name": "com.pdfscanner.pdf.scanpdf"
         }
       },
       "oauth_client": [
         {
-          "client_id": "945368593470-e47velgrjghgchda4v76prbsl43ubl70.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.pdfscanner.pdf.scanpdf",
-            "certificate_hash": "185d58e957c480173d0b54ea6458af6eb32bad06"
-          }
-        },
-        {
-          "client_id": "945368593470-meakcv677ra6psk99qpsu9iatklq5scg.apps.googleusercontent.com",
+          "client_id": "55511794609-8jl32tfq0vptv7j9uhtudpmtng867ov0.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAqAUfc8QJFHkfoqfc6Jr_2PxzGWWb6PMk"
+          "current_key": "AIzaSyDJbWN7HgK5UiznSTXv_Zy0qKSpXdIOxVA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "945368593470-meakcv677ra6psk99qpsu9iatklq5scg.apps.googleusercontent.com",
+              "client_id": "55511794609-8jl32tfq0vptv7j9uhtudpmtng867ov0.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

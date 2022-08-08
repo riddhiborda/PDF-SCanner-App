@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PDF Scanner - Scan PDF</string>
+    <string name="app_name">PDF Scanner-Document Scan,OCR</string>
     <string name="app_name_2">PDF Scanner</string>
 
     <string name="permission_txt1">Please allow</string>

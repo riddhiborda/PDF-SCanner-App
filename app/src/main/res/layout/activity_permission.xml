@@ -17,10 +17,10 @@
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:layout_collapseMode="pin"
+        app:layout_constraintBottom_toTopOf="@+id/llMainContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/llMainContainer"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
 
     <LinearLayout
@@ -89,23 +89,13 @@
 
     </LinearLayout>
 
-    <com.pdfscanner.pdf.scanpdf.Util.RoundedView
+    <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="@dimen/_80sdp"
         android:layout_height="@dimen/_80sdp"
-        app:bottomLeftCornerRadius="@dimen/_10sdp"
-        app:bottomRightCornerRadius="@dimen/_10sdp"
+        android:src="@drawable/ic_app_icon"
+        app:layout_constraintBottom_toTopOf="@+id/llMainContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/llMainContainer"
-        app:layout_constraintBottom_toTopOf="@+id/llMainContainer"
-        app:topLeftCornerRadius="@dimen/_10sdp"
-        app:topRightCornerRadius="@dimen/_10sdp">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_app_icon" />
-
-    </com.pdfscanner.pdf.scanpdf.Util.RoundedView>
+        app:layout_constraintTop_toTopOf="@+id/llMainContainer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

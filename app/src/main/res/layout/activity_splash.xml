@@ -4,26 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:background="@color/black"
+    android:gravity="center"
     android:orientation="vertical"
     tools:context=".ui.SplashActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/_15sdp"
         android:background="@color/black"
         android:visibility="visible"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:layout_collapseMode="pin"
+        app:layout_constraintBottom_toTopOf="@+id/llMainContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/llMainContainer"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" >
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -33,13 +33,14 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:textSize="@dimen/_20sdp"
-                android:fontFamily="@font/sf_pro_heavy"
                 android:layout_centerInParent="true"
-                android:includeFontPadding="false"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:textColor="@color/white"/>
+                android:gravity="center"
+                android:fontFamily="@font/sf_pro_heavy"
+                android:includeFontPadding="false"
+                android:text="@string/app_name"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_20sdp" />
 
         </RelativeLayout>
 
@@ -57,20 +58,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-        <com.pdfscanner.pdf.scanpdf.Util.RoundedView
+
+        <ImageView
             android:layout_width="@dimen/_100sdp"
             android:layout_height="@dimen/_100sdp"
-            app:topLeftCornerRadius="@dimen/_10sdp"
-            app:topRightCornerRadius="@dimen/_10sdp"
-            app:bottomLeftCornerRadius="@dimen/_10sdp"
-            app:bottomRightCornerRadius="@dimen/_10sdp">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_app_icon"/>
-
-        </com.pdfscanner.pdf.scanpdf.Util.RoundedView>
+            android:src="@drawable/ic_app_icon" />
 
     </LinearLayout>
 

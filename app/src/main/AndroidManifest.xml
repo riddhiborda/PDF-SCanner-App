@@ -16,10 +16,10 @@
     <application
         android:name=".BaseClass"
         android:allowBackup="false"
-        android:icon="@mipmap/ic_app_icon"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name_2"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@mipmap/ic_round_app_icon"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PDFScanner"
         android:usesCleartextTraffic="true"
